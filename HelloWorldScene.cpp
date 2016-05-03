@@ -29,77 +29,12 @@ bool HelloWorld::init()
 	bg->setPosition(Vec2(0, 100));
 	//this->addChild(bg);
 
-	//----------------플레이어 텍스쳐
-	playerMoveTexture = Director::getInstance()->getTextureCache()->addImage("player/move/move.png");
-	playerAttackTexture = Director::getInstance()->getTextureCache()->addImage("player/attack/attack.png");
-	playerIdleTexture = Director::getInstance()->getTextureCache()->addImage("player/idle/idle.png");
-	playerDeadTexture = Director::getInstance()->getTextureCache()->addImage("player/dead/dead.png");
-
-	pSprite = Sprite::createWithTexture(playerIdleTexture, Rect(0, 0, 160, 160));
-	this->addChild(pSprite);
-	pSprite->setPosition(Vec2(300, 200));
-
-	
-	//--------이동	
-	auto animation1 = Animation::create();
-	animation1->setDelayPerUnit(0.1);
-	for (int i = 0; i < 6; i++)
-	{
-		int column = i % 6;
-
-		animation1->addSpriteFrameWithTexture(playerMoveTexture, Rect(160 * column, 0, 160, 160));
-	}
-
-	auto animate1 = Animate::create(animation1);
-
-	auto seq1 = Sequence::create(animate1, nullptr);
-	auto playerMoveSeq = RepeatForever::create(seq1);
-
-	pSprite->runAction(playerMoveSeq);
-
-	//--------휴식
-	auto animation2 = Animation::create();
-	for (int i = 0; i < 4; i++)
-	{
-		int column = i % 4;
-
-		animation2->addSpriteFrameWithTexture(playerIdleTexture, Rect(160 * column, 0, 160, 160));
-	}
-
-	auto animate2 = Animate::create(animation2);
-
-	auto seq2 = Sequence::create(animate2, nullptr);
-	auto playerIdleSeq = RepeatForever::create(seq2);
-
-
-	//---------공격
-	auto animation3 = Animation::create();
-	for (int i = 0; i < 4; i++)
-	{
-		int column = i % 4;
-
-		animation3->addSpriteFrameWithTexture(playerAttackTexture, Rect(160 * column, 0, 160, 160));
-	}
-
-	auto animate3 = Animate::create(animation3);
-
-	auto seq3 = Sequence::create(animate3, nullptr);
-	auto playerAttackSeq = RepeatForever::create(seq3);
-
-	//----------죽음
-	auto animation4 = Animation::create();
-	for (int i = 0; i < 6; i++)
-	{
-		int column = i % 6;
-
-		animation4->addSpriteFrameWithTexture(playerDeadTexture, Rect(160 * column, 0, 160, 160));
-	}
-
-	auto animate4 = Animate::create(animation4);
-
-	auto seq4 = Sequence::create(animate4, nullptr);
-	auto playerDeadSeq = RepeatForever::create(seq4);
-
+	//플레이어 생성
+	auto pTexture = Director::getInstance()->getTextureCache()->addImage("player/idle/idle.png");
+	player = new Player();
+	player->initWithTexture(pTexture, Rect(0, 0, 160, 160));
+	player->setPosition(Vec2(300, 200));
+	this->addChild(player);
 
 
 	//-------------월드 생성
@@ -111,9 +46,9 @@ bool HelloWorld::init()
 	//--------------플레이어 바디생성
 	b2BodyDef playerBodyDef;
 	playerBodyDef.type = b2_dynamicBody;
-	playerBodyDef.position.Set(pSprite->getPosition().x / PTM_RATIO, pSprite->getPosition().y / PTM_RATIO);
+	playerBodyDef.position.Set(player->getPosition().x / PTM_RATIO, player->getPosition().y / PTM_RATIO);
 	playerBodyDef.linearDamping = 20;
-	playerBodyDef.userData = pSprite;
+	playerBodyDef.userData = player;
 	
 
 	playerBody = _world->CreateBody(&playerBodyDef);
@@ -122,7 +57,7 @@ bool HelloWorld::init()
 	//playerBody->SetGravityScale(0);
 	
 	b2PolygonShape playerPolygon;
-	playerPolygon.SetAsBox((pSprite->getContentSize().width / 2) / PTM_RATIO, (pSprite->getContentSize().height / 2) / PTM_RATIO);
+	playerPolygon.SetAsBox((player->getContentSize().width / 2) / PTM_RATIO, (player->getContentSize().height / 2) / PTM_RATIO);
 
 	b2FixtureDef playerFixtureDef;
 	playerFixtureDef.shape = &playerPolygon;
@@ -130,13 +65,18 @@ bool HelloWorld::init()
 	
 	playerBody->CreateFixture(&playerFixtureDef);
 
-
+	
 	//----조이스틱 생성
-	joystick1 = Joystick::create();
+	joystick1 = new Joystick();
+	joystick1->joyNum = 0;
+	joystick1->init();
 	this->addChild(joystick1);
-	joyNum = 1;
+	
+	
 
-	joystick2 = Joystick::create();
+	joystick2 = new Joystick();
+	joystick2->joyNum = 1;
+	joystick2->init();
 	this->addChild(joystick2);
 	
 
@@ -212,7 +152,6 @@ bool HelloWorld::createWorld(bool debug)
 	groundBody->CreateFixture(&boxShapeDef);
 
 	//월드 생성 끝-----------------------
-	this->schedule(schedule_selector(HelloWorld::tick));
 
 	return true;
 }
@@ -280,19 +219,52 @@ void HelloWorld::tick(float dt)
 
 			float vx = joystick1->getVelocity().x * 5;//스피드
 			float vy = joystick1->getVelocity().y * 5;
-			log("%f %f", vx, vy);
-			log("%f", b->GetLinearVelocity());
 			//set ball velocity by Joystick
 			b->SetLinearVelocity(b2Vec2(vx, vy) + (b->GetLinearVelocity()));
 			
 		}
-		if (!joystick1->getisPressed())
-			playerBody->SetLinearVelocity(b2Vec2(0, 0));
+		
 	}
-	if (joystick1->getVelocity().x < 0)
-		pSprite->setFlippedX(true);
-	else
-		pSprite->setFlippedX(false);
+	if (joystick2->getisPressed())
+	{
+
+		log("click");
+
+		player->stopAllActions();
+		player->AttackAction();
+		
+		joystick2->setisPressed();
+
+	}
+	else if (joystick1->getVelocity().x == 0 && joystick1->getVelocity().y == 0 &&count == 0)
+	{
+		player->stopAllActions();
+		player->IdleAction();
+		count = 1;
+		
+	}
+	else if (joystick1->getVelocity().x < 0)
+	{
+		if (count == 1)
+		{
+			player->stopAllActions();
+			player->MoveAction();
+			count = 0;
+		}
+		player->setFlippedX(true);
+		
+	}
+	else if (joystick1->getVelocity().x > 0)
+	{
+		if (count == 1)
+		{
+			player->stopAllActions();
+			player->MoveAction();
+			count = 0;
+		}
+		player->setFlippedX(false);
+
+	}
 
 }
 

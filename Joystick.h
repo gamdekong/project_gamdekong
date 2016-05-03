@@ -13,7 +13,7 @@
 
 using namespace cocos2d;
 
-static int joyNum = 0;
+
 
 class Joystick : public Layer
 {
@@ -24,7 +24,8 @@ public:
 
     Vec2 getVelocity(){ return velocity; }
 	bool getisPressed();
-	
+	void setisPressed();
+	int joyNum;
 private:
 
     Vec2 kCenter;

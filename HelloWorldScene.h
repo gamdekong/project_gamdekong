@@ -5,8 +5,10 @@
 #include "Box2D/Box2D.h"
 #include "GLES-Render.h"
 #include "Joystick.h"
+#include "Player.h"
 
 #define PTM_RATIO 32
+
 
 using namespace cocos2d;
 
@@ -33,8 +35,10 @@ public:
 	b2World *_world;
 	Joystick *joystick1;
 	Joystick *joystick2;
+	Player *player;
 	Sprite *pSprite;
 	b2Body *playerBody;
+	int count = 0;
 	
 
 	/////Texture
@@ -44,7 +48,10 @@ public:
 	Texture2D *playerIdleTexture;
 	Texture2D *playerDeadTexture;
 
-	
+
+	//action
+	RepeatForever *playerMoveSeq;
+	RepeatForever *playerIdleSeq;
 
 
 	//for debugging

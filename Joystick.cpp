@@ -53,11 +53,19 @@ bool Joystick::init()
 		thumb->setPosition(kCenter);
 		this->addChild(thumb, 1);
 	}
-	else
+	else if(joyNum == 1)
 	{
 		auto winsize = Director::getInstance()->getWinSize();
-		kCenter = Vec2(JOYSTICK_RADIUS + winsize.width-300,
+		kCenter = Vec2(JOYSTICK_RADIUS + winsize.width-140,
 			JOYSTICK_RADIUS + JOYSTICK_OFFSET_Y);
+		log("%f %f", kCenter.x, kCenter.y);
+
+		auto listener = EventListenerTouchAllAtOnce::create();
+		listener->onTouchesBegan = CC_CALLBACK_2(Joystick::onTouchesBegan, this);
+		listener->onTouchesMoved = CC_CALLBACK_2(Joystick::onTouchesMoved, this);
+		listener->onTouchesEnded = CC_CALLBACK_2(Joystick::onTouchesEnded, this);
+		listener->onTouchesCancelled = CC_CALLBACK_2(Joystick::onTouchesCancelled, this);
+		_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
 		velocity = Vec2::ZERO;
 
@@ -70,7 +78,7 @@ bool Joystick::init()
 		this->addChild(thumb, 1);
 
 	}
-    
+	log("%d", joyNum);
     return true;
 }
 
@@ -120,6 +128,11 @@ bool Joystick::getisPressed()
 {
 
 	return isPressed;
+}
+
+void Joystick::setisPressed()
+{
+	isPressed = false;
 }
 
 
