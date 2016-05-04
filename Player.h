@@ -1,5 +1,4 @@
-
-
+#pragma once
 #include "cocos2d.h"
 
 using namespace cocos2d;
@@ -12,6 +11,9 @@ public:
 	void DeadAction();
 	void MoveAction();
 
+
+	Player();
+	bool init2();
 
 	Texture2D *playerMoveTexture;
 	Texture2D *playerAttackTexture;

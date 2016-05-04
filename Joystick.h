@@ -25,6 +25,7 @@ public:
     Vec2 getVelocity(){ return velocity; }
 	bool getisPressed();
 	void setisPressed();
+	bool handleLastTouch();
 	int joyNum;
 private:
 
@@ -36,7 +37,7 @@ private:
     
     void updateVelocity(Vec2 point);
     void resetJoystick();
-    bool handleLastTouch();
+  
 	
 
     virtual void onTouchesBegan(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event* event);

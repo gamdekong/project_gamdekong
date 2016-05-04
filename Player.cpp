@@ -1,8 +1,10 @@
 #include "Player.h"
 
+
+
 void Player::IdleAction()
 {
-	playerIdleTexture = Director::getInstance()->getTextureCache()->addImage("player/idle/idle.png");
+	
 	//--------ÈÞ½Ä
 	auto animation2 = Animation::create();
 	animation2->setDelayPerUnit(0.2);
@@ -22,7 +24,6 @@ void Player::IdleAction()
 
 void Player::AttackAction()
 {
-	playerIdleTexture = Director::getInstance()->getTextureCache()->addImage("player/idle/idle.png");
 	//--------ÈÞ½Ä
 	auto animation2 = Animation::create();
 	animation2->setDelayPerUnit(0.2);
@@ -41,7 +42,7 @@ void Player::AttackAction()
 
 	/////////////////////////////////////////
 
-	playerAttackTexture = Director::getInstance()->getTextureCache()->addImage("player/attack/attack.png");
+	
 	auto animation3 = Animation::create();
 	animation3->setDelayPerUnit(0.1);
 	for (int i = 0; i < 4; i++)
@@ -61,7 +62,6 @@ void Player::AttackAction()
 
 void Player::DeadAction()
 {
-	playerDeadTexture = Director::getInstance()->getTextureCache()->addImage("player/dead/dead.png");
 	auto animation4 = Animation::create();
 	animation4->setDelayPerUnit(0.1);
 	for (int i = 0; i < 6; i++)
@@ -80,7 +80,6 @@ void Player::DeadAction()
 
 void Player::MoveAction()
 {
-	playerMoveTexture = Director::getInstance()->getTextureCache()->addImage("player/move/move.png");
 	auto animation1 = Animation::create();
 	animation1->setDelayPerUnit(0.1);
 	for (int i = 0; i < 6; i++)
@@ -96,4 +95,24 @@ void Player::MoveAction()
 	auto playerMoveSeq = RepeatForever::create(seq1);
 
 	this->runAction(playerMoveSeq);
+}
+
+Player::Player()
+{
+
+	playerMoveTexture = Director::getInstance()->getTextureCache()->addImage("player/move/move.png");
+	playerAttackTexture = Director::getInstance()->getTextureCache()->addImage("player/attack/attack.png");
+	playerIdleTexture = Director::getInstance()->getTextureCache()->addImage("player/idle/idle.png");
+	playerDeadTexture = Director::getInstance()->getTextureCache()->addImage("player/dead/dead.png");
+
+	this->init2();
+
+}
+
+bool Player::init2()
+{
+	this->initWithTexture(playerIdleTexture, Rect(0, 0, 160, 160));
+	this->setPosition(Vec2(300, 200));
+	this->setAnchorPoint(Vec2(0.5, 0.4));
+	return true;
 }
