@@ -13,8 +13,11 @@ public:
 
 
 	Player();
-	bool init2();
+	void init2();
 
+
+	int maxEnergy;
+	int nowEnergy;
 	Texture2D *playerMoveTexture;
 	Texture2D *playerAttackTexture;
 	Texture2D *playerIdleTexture;

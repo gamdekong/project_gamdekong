@@ -109,10 +109,9 @@ Player::Player()
 
 }
 
-bool Player::init2()
+void Player::init2()
 {
 	this->initWithTexture(playerIdleTexture, Rect(0, 0, 160, 160));
 	this->setPosition(Vec2(300, 200));
-	this->setAnchorPoint(Vec2(0.5, 0.4));
-	return true;
+	//this->setAnchorPoint(Vec2(0.5, 0.4));
 }

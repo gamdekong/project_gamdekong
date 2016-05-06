@@ -25,12 +25,16 @@ bool BackgroundLayer::init()
 
 	player = new Player();
 	this->addChild(player, 1);
+	monster = new Monster();
+	this->addChild(monster, 1);
 	
 	if (this->createWorld(true))
 		this->schedule(schedule_selector(BackgroundLayer::tick));
-	this->createPlayer(player);
-	this->createBackground();
-	this->runAction(Follow::create(player, Rect(0, 0, 1500, 720)));
+	this->createPlayer(player);  //바디 생성
+	this->createMonster(monster);
+
+	//this->createBackground();   //배경 이미지 생성
+	this->runAction(Follow::create(player, Rect(0, 0, 1500, 720)));  //카메라 이동
 
 
 	return true;
@@ -83,6 +87,8 @@ bool BackgroundLayer::createWorld(bool debug)
 	b2EdgeShape groundEdge;
 	b2FixtureDef boxShapeDef;
 	boxShapeDef.shape = &groundEdge;
+	boxShapeDef.filter.categoryBits = CATEGORY_GROUND;
+	boxShapeDef.filter.maskBits = CATEGORY_MONSTER + CATEGORY_PLAYER;
 
 	//에지 모양의 객체에 Set(점1, 점2)선을 만든다.
 	//그리고 바디(groundBody)에 모양(groundEdge)을 고정시킨다.
@@ -133,15 +139,46 @@ void BackgroundLayer::createPlayer(Sprite * player)
 	//playerBody->SetGravityScale(0);
 
 	b2PolygonShape playerPolygon;
-	playerPolygon.SetAsBox((player->getContentSize().width / 5) / PTM_RATIO, (player->getContentSize().height / 2.5) / PTM_RATIO);
+	playerPolygon.SetAsBox((player->getContentSize().width /2) / PTM_RATIO, (player->getContentSize().height / 2) / PTM_RATIO);
 	log(" %f ", (player->getContentSize().height / 2.5));
 
 	b2FixtureDef playerFixtureDef;
 	playerFixtureDef.shape = &playerPolygon;
 	playerFixtureDef.density = 0.0f;
-
+	playerFixtureDef.filter.groupIndex = GROUP_INDEX_PLAYER;
+	playerFixtureDef.filter.categoryBits = CATEGORY_PLAYER;
+//	playerFixtureDef.filter.maskBits = 0;
 	playerBody->CreateFixture(&playerFixtureDef);
 
+}
+
+void BackgroundLayer::createMonster(Sprite * monster)
+{
+	//--------------플레이어 바디생성
+	b2BodyDef monsterBodyDef;
+	monsterBodyDef.type = b2_dynamicBody;
+	monsterBodyDef.position.Set(monster->getPosition().x / PTM_RATIO, monster->getPosition().y / PTM_RATIO);
+	monsterBodyDef.linearDamping = 20;
+	monsterBodyDef.userData = monster;
+
+
+	monsterBody = _world->CreateBody(&monsterBodyDef);
+
+	//playerBody->SetMassData(mass);
+	//playerBody->SetGravityScale(0);
+
+	b2PolygonShape monsterPolygon;
+	monsterPolygon.SetAsBox((monster->getContentSize().width / 2) / PTM_RATIO, (monster->getContentSize().height / 2) / PTM_RATIO);
+	log(" %f ", (monster->getContentSize().height / 2.5));
+
+	b2FixtureDef monsterFixtureDef;
+	monsterFixtureDef.shape = &monsterPolygon;
+	monsterFixtureDef.density = 0.0f;
+	monsterFixtureDef.filter.groupIndex = GROUP_INDEX_MONSTER;
+	monsterFixtureDef.filter.categoryBits = CATEGORY_MONSTER;
+	monsterFixtureDef.filter.maskBits = CATEGORY_PLAYER;
+
+	monsterBody->CreateFixture(&monsterFixtureDef);
 }
 
 void BackgroundLayer::createBackground()
@@ -213,14 +250,53 @@ void BackgroundLayer::tick(float dt)
 			spriteData->setPosition(Vec2(b->GetPosition().x * PTM_RATIO, b->GetPosition().y * PTM_RATIO));
 			spriteData->setRotation(-1 * CC_RADIANS_TO_DEGREES(b->GetAngle()));
 
-			float vx = joystick1->getVelocity().x * 5;//스피드
-			float vy = joystick1->getVelocity().y * 5;
-			//set ball velocity by Joystick
-			b->SetLinearVelocity(b2Vec2(vx, vy) + (b->GetLinearVelocity()));
+			if (b->GetUserData() == player)
+			{
+				float vx = joystick1->getVelocity().x * 5;//스피드
+				float vy = joystick1->getVelocity().y * 5;
+				//set ball velocity by Joystick
+				b->SetLinearVelocity(b2Vec2(vx, vy) + (b->GetLinearVelocity()));
+
+			}
+			
 
 		}
 
 	}
+	//  충돌 처리
+	if (player->getPosition().y < monster->getPosition().y + 30 && player->getPosition().y > monster->getPosition().y - 30)
+	{
+		log("dddd");
+		auto newFilter = new b2Filter();
+		auto oldFilter = new b2Filter();
+		*oldFilter = playerBody->GetFixtureList()->GetFilterData();
+		newFilter = oldFilter;
+		newFilter->maskBits = CATEGORY_MONSTER;
+		playerBody->GetFixtureList()->SetFilterData(*newFilter);
+	}
+	else
+	{
+		auto newFilter = new b2Filter();
+		auto oldFilter = new b2Filter();
+		*oldFilter = playerBody->GetFixtureList()->GetFilterData();
+		newFilter = oldFilter;
+		newFilter->maskBits = 1;
+		playerBody->GetFixtureList()->SetFilterData(*newFilter);
+
+	}
+
+	// ZOrder 처리
+	if (player->getPosition().y > monster->getPosition().y+30)
+		player->setZOrder(monster->getZOrder() - 1);
+	else if(player->getPosition().y < monster->getPosition().y+30)
+		player->setZOrder(monster->getZOrder() + 1);
+
+	
+
+
+
+
+	// 캐릭터 이동 관련 부분
 	if (joystick2->getisPressed())
 	{
 
