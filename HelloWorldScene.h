@@ -9,7 +9,9 @@
 #include "BackgroundLayer.h"
 
 #define PTM_RATIO 32
-
+//#define SHORT_ATTACK 1
+//#define RIGHT_LONG_ATTACK 2
+//#define LEFT_LONG_ATTACK 3
 
 using namespace cocos2d;
 
@@ -25,12 +27,12 @@ public:
 
 	
 	
-	b2World *_world;
+	//b2World *_world;
 	Joystick *joystick1;
 	Joystick *joystick2;
-	Player *player;
-	Sprite *pSprite;
-	b2Body *playerBody;
+	//Player *player;
+	//Sprite *pSprite;
+	//b2Body *playerBody;
 	BackgroundLayer *bgLayer;
 	Layer *joyLayer;
 	int count = 0;

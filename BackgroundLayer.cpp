@@ -266,7 +266,7 @@ void BackgroundLayer::tick(float dt)
 	//  충돌 처리
 	if (player->getPosition().y < monster->getPosition().y + 30 && player->getPosition().y > monster->getPosition().y - 30)
 	{
-		log("dddd");
+		//log("dddd");
 		auto newFilter = new b2Filter();
 		auto oldFilter = new b2Filter();
 		*oldFilter = monsterBody->GetFixtureList()->GetFilterData();
@@ -296,20 +296,43 @@ void BackgroundLayer::tick(float dt)
 
 
 
-	// 캐릭터 이동 관련 부분
-	if (joystick2->getisPressed())
+	// 캐릭터 공격 관련 부분
+	if (joystick2->getisPressed() && joystick2->attack != 0)
 	{
+		if (joystick2->attack == SHORT_ATTACK)
+		{
+			player->stopAllActions();
+			player->AttackAction();
+			joystick2->attack = 0;
 
-		log("click");
+		}
+		else if (joystick2->attack == RIGHT_LONG_ATTACK)
+		{
+			log("오른쪽 검기");
+			SwordMissile *missile = new SwordMissile(1);
+			missile->setPosition(Vec2(player->getPosition().x + 16.f, player->getPosition().y));
+			missile->setFlipX(true);
+			this->addChild(missile);
+			
+			auto move = MoveBy::create(1.75f, Vec2(1500, 0));
+			missile->runAction(move);
 
-		player->stopAllActions();
-		player->AttackAction();
-
-		joystick2->handleLastTouch();
+			joystick2->attack = 0;
+		}
+		else if (joystick2->attack == LEFT_LONG_ATTACK)
+		{
+			log("왼쪽 검기");
+			joystick2->attack = 0;
+		}
+				
 
 	}
-	else if (joystick1->getVelocity().x == 0 && joystick1->getVelocity().y == 0 && count == 0)
+
+
+	// 캐릭터 이동 관련 부분
+	if (joystick1->getVelocity().x == 0 && joystick1->getVelocity().y == 0 && count == 0)
 	{
+		
 		player->stopAllActions();
 		player->IdleAction();
 		count = 1;
@@ -317,6 +340,7 @@ void BackgroundLayer::tick(float dt)
 	}
 	else if (joystick1->getVelocity().x < 0)
 	{
+		log("%f", joystick1->getVelocity().x);
 		if (count == 1)
 		{
 			player->stopAllActions();
@@ -328,6 +352,7 @@ void BackgroundLayer::tick(float dt)
 	}
 	else if (joystick1->getVelocity().x > 0)
 	{
+		log("%f", joystick1->getVelocity().x);
 		if (count == 1)
 		{
 			player->stopAllActions();

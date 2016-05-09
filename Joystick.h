@@ -11,9 +11,12 @@
 
 #include "cocos2d.h"
 
+
 using namespace cocos2d;
 
-
+#define SHORT_ATTACK 1
+#define RIGHT_LONG_ATTACK 2
+#define LEFT_LONG_ATTACK 3
 
 class Joystick : public Layer
 {
@@ -27,6 +30,7 @@ public:
 	void setisPressed();
 	bool handleLastTouch();
 	int joyNum;
+	int attack;
 private:
 
     Vec2 kCenter;

@@ -46,7 +46,7 @@ bool HelloWorld::init()
 	bgLayer = new BackgroundLayer();
 	bgLayer->joystick1 = joystick1;
 	bgLayer->joystick2 = joystick2;
-	bgLayer->player = player;
+	//bgLayer->player = player;
 	bgLayer->init();
 	
 

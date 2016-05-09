@@ -7,6 +7,8 @@
 #include "Joystick.h"
 #include "Player.h"
 #include "Monster.h"
+#include "SwordMissile.h"
+
 
 #define PTM_RATIO 32
 #define GROUP_INDEX_PLAYER -10
@@ -16,6 +18,7 @@
 #define CATEGORY_PLAYER 0x0001
 #define CATEGORY_MONSTER 0x0002
 #define CATEGORY_GROUND 0x0003
+#define CATEGORY_MISSILE 0x0004
 
 
 using namespace cocos2d;
