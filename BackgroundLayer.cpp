@@ -139,7 +139,7 @@ void BackgroundLayer::createPlayer(Sprite * player)
 	//playerBody->SetGravityScale(0);
 
 	b2PolygonShape playerPolygon;
-	playerPolygon.SetAsBox((player->getContentSize().width /2) / PTM_RATIO, (player->getContentSize().height / 2) / PTM_RATIO);
+	playerPolygon.SetAsBox((player->getContentSize().width /6) / PTM_RATIO, (player->getContentSize().height / 2) / PTM_RATIO);
 	log(" %f ", (player->getContentSize().height / 2.5));
 
 	b2FixtureDef playerFixtureDef;
@@ -147,7 +147,7 @@ void BackgroundLayer::createPlayer(Sprite * player)
 	playerFixtureDef.density = 0.0f;
 	playerFixtureDef.filter.groupIndex = GROUP_INDEX_PLAYER;
 	playerFixtureDef.filter.categoryBits = CATEGORY_PLAYER;
-//	playerFixtureDef.filter.maskBits = 0;
+	playerFixtureDef.filter.maskBits = CATEGORY_MONSTER;
 	playerBody->CreateFixture(&playerFixtureDef);
 
 }
@@ -269,19 +269,19 @@ void BackgroundLayer::tick(float dt)
 		log("dddd");
 		auto newFilter = new b2Filter();
 		auto oldFilter = new b2Filter();
-		*oldFilter = playerBody->GetFixtureList()->GetFilterData();
+		*oldFilter = monsterBody->GetFixtureList()->GetFilterData();
 		newFilter = oldFilter;
-		newFilter->maskBits = CATEGORY_MONSTER;
-		playerBody->GetFixtureList()->SetFilterData(*newFilter);
+		newFilter->maskBits = CATEGORY_PLAYER;
+		monsterBody->GetFixtureList()->SetFilterData(*newFilter);
 	}
 	else
 	{
 		auto newFilter = new b2Filter();
 		auto oldFilter = new b2Filter();
-		*oldFilter = playerBody->GetFixtureList()->GetFilterData();
+		*oldFilter = monsterBody->GetFixtureList()->GetFilterData();
 		newFilter = oldFilter;
-		newFilter->maskBits = 1;
-		playerBody->GetFixtureList()->SetFilterData(*newFilter);
+		newFilter->maskBits = 200;
+		monsterBody->GetFixtureList()->SetFilterData(*newFilter);
 
 	}
 

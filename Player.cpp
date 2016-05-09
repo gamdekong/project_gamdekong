@@ -12,7 +12,7 @@ void Player::IdleAction()
 	{
 		int column = i % 4;
 
-		animation2->addSpriteFrameWithTexture(playerIdleTexture, Rect(160 * column, 0, 160, 160));
+		animation2->addSpriteFrameWithTexture(playerIdleTexture, Rect(160 * column, 0, 160, 120));
 	}
 
 	auto animate2 = Animate::create(animation2);
@@ -31,7 +31,7 @@ void Player::AttackAction()
 	{
 		int column = i % 4;
 
-		animation2->addSpriteFrameWithTexture(playerIdleTexture, Rect(160 * column, 0, 160, 160));
+		animation2->addSpriteFrameWithTexture(playerIdleTexture, Rect(160 * column, 0, 160, 120));
 	}
 
 	auto animate2 = Animate::create(animation2);
@@ -49,7 +49,7 @@ void Player::AttackAction()
 	{
 		int column = i % 4;
 
-		animation3->addSpriteFrameWithTexture(playerAttackTexture, Rect(160 * column, 0, 160, 160));
+		animation3->addSpriteFrameWithTexture(playerAttackTexture, Rect(160 * column, 0, 160, 120));
 	}
 
 	auto animate3 = Animate::create(animation3);
@@ -68,7 +68,7 @@ void Player::DeadAction()
 	{
 		int column = i % 6;
 
-		animation4->addSpriteFrameWithTexture(playerDeadTexture, Rect(160 * column, 0, 160, 160));
+		animation4->addSpriteFrameWithTexture(playerDeadTexture, Rect(160 * column, 0, 160, 120));
 	}
 
 	auto animate4 = Animate::create(animation4);
@@ -86,7 +86,7 @@ void Player::MoveAction()
 	{
 		int column = i % 6;
 
-		animation1->addSpriteFrameWithTexture(playerMoveTexture, Rect(160 * column, 0, 160, 160));
+		animation1->addSpriteFrameWithTexture(playerMoveTexture, Rect(160 * column, 0, 160, 120));
 	}
 
 	auto animate1 = Animate::create(animation1);
@@ -111,7 +111,7 @@ Player::Player()
 
 void Player::init2()
 {
-	this->initWithTexture(playerIdleTexture, Rect(0, 0, 160, 160));
+	this->initWithTexture(playerIdleTexture, Rect(0, 0, 160, 120));
 	this->setPosition(Vec2(300, 200));
 	//this->setAnchorPoint(Vec2(0.5, 0.4));
 }
