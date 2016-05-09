@@ -118,20 +118,23 @@ bool Joystick::handleLastTouch()
     bool wasPressed = isPressed;
 
 
+	if (wasPressed)
+	{
 
-	if (this->getVelocity().x > 0.9)
-	{
-		attack = RIGHT_LONG_ATTACK;
-	}
-	else if (this->getVelocity().x < -0.9)
-	{
-		attack = LEFT_LONG_ATTACK;
-	}
-	else
-	{
-		attack = SHORT_ATTACK;
-		//joystick2->handleLastTouch();
+		if (this->getVelocity().x > 0.9)
+		{
+			attack = RIGHT_LONG_ATTACK;
+		}
+		else if (this->getVelocity().x < -0.9)
+		{
+			attack = LEFT_LONG_ATTACK;
+		}
+		else
+		{
+			attack = SHORT_ATTACK;
+			//joystick2->handleLastTouch();
 
+		}
 	}
     if (wasPressed)
     {

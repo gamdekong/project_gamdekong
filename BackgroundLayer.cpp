@@ -29,7 +29,12 @@ bool BackgroundLayer::init()
 	this->addChild(monster, 1);
 	
 	if (this->createWorld(true))
+	{
 		this->schedule(schedule_selector(BackgroundLayer::tick));
+		myContactListener = new ContactListener(_world);
+
+		_world->SetContactListener((b2ContactListener*)myContactListener);
+	}
 	this->createPlayer(player);  //바디 생성
 	this->createMonster(monster);
 
@@ -119,6 +124,8 @@ bool BackgroundLayer::createWorld(bool debug)
 
 	//월드 생성 끝-----------------------
 
+	
+
 	return true;
 }
 
@@ -168,7 +175,7 @@ void BackgroundLayer::createMonster(Sprite * monster)
 	//playerBody->SetGravityScale(0);
 
 	b2PolygonShape monsterPolygon;
-	monsterPolygon.SetAsBox((monster->getContentSize().width / 2) / PTM_RATIO, (monster->getContentSize().height / 2) / PTM_RATIO);
+	monsterPolygon.SetAsBox((monster->getContentSize().width / 6) / PTM_RATIO, (monster->getContentSize().height / 2) / PTM_RATIO);
 	log(" %f ", (monster->getContentSize().height / 2.5));
 
 	b2FixtureDef monsterFixtureDef;
@@ -297,7 +304,7 @@ void BackgroundLayer::tick(float dt)
 
 
 	// 캐릭터 공격 관련 부분
-	if (joystick2->getisPressed() && joystick2->attack != 0)
+	if (!joystick2->getisPressed() && joystick2->attack != 0)
 	{
 		if (joystick2->attack == SHORT_ATTACK)
 		{
@@ -310,12 +317,41 @@ void BackgroundLayer::tick(float dt)
 		{
 			log("오른쪽 검기");
 			SwordMissile *missile = new SwordMissile(1);
-			missile->setPosition(Vec2(player->getPosition().x + 16.f, player->getPosition().y));
+			missile->setPosition(Vec2(player->getPosition().x + 30.f, player->getPosition().y));
 			missile->setFlipX(true);
 			this->addChild(missile);
 			
-			auto move = MoveBy::create(1.75f, Vec2(1500, 0));
-			missile->runAction(move);
+			//auto move = MoveBy::create(1.75f, Vec2(1500, 0));
+			//missile->runAction(move);
+
+
+			b2BodyDef missileBodyDef;
+			missileBodyDef.type = b2_dynamicBody;
+			missileBodyDef.position.Set(missile->getPosition().x / PTM_RATIO, missile->getPosition().y / PTM_RATIO);
+			missileBodyDef.linearDamping = 0;
+			missileBodyDef.userData = missile;
+
+
+			auto missileBody = _world->CreateBody(&missileBodyDef);
+
+			//playerBody->SetMassData(mass);
+			//playerBody->SetGravityScale(0);
+
+			b2PolygonShape missilePolygon;
+			missilePolygon.SetAsBox((missile->getContentSize().width / 6) / PTM_RATIO, (missile->getContentSize().height / 2) / PTM_RATIO);
+			
+
+			b2FixtureDef missileFixtureDef;
+			missileFixtureDef.shape = &missilePolygon;
+			missileFixtureDef.density = 0.0f;
+			missileFixtureDef.restitution = 0.5;
+			missileFixtureDef.filter.groupIndex = GROUP_INDEX_PLAYER;
+			//monsterFixtureDef.filter.categoryBits = CATEGORY_MONSTER;
+			//monsterFixtureDef.filter.maskBits = CATEGORY_PLAYER;
+
+			missileBody->CreateFixture(&missileFixtureDef);
+			missileBody->SetLinearVelocity(b2Vec2(10, 0));
+			//missileBodyVector.push_back(missileBody);
 
 			joystick2->attack = 0;
 		}

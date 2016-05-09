@@ -1,6 +1,7 @@
 #ifndef __BackgroundLayer_SCENE_H__
 #define __BackgroundLayer_SCENE_H__
 
+//#include <iostream>
 #include "cocos2d.h"
 #include "Box2D/Box2D.h"
 #include "GLES-Render.h"
@@ -8,6 +9,7 @@
 #include "Player.h"
 #include "Monster.h"
 #include "SwordMissile.h"
+#include "ContactListener.h"
 
 
 #define PTM_RATIO 32
@@ -22,6 +24,7 @@
 
 
 using namespace cocos2d;
+using namespace std;
 
 class BackgroundLayer : public cocos2d::Layer
 {
@@ -53,7 +56,8 @@ public:
 	Sprite *pSprite;
 	b2Body *playerBody;
 	b2Body *monsterBody;
-	
+	vector<b2Body*> missileBodyVector;
+	ContactListener* myContactListener;
 	int count = 0;
 
 
