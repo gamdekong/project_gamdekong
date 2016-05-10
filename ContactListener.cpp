@@ -1,4 +1,7 @@
 #include "ContactListener.h"
+#include "SwordMissile.h"
+#include "Monster.h"
+#include "Player.h"
 
 ContactListener::ContactListener(b2World *world) {
 	_world = world;
@@ -21,6 +24,37 @@ void ContactListener::EndContact(b2Contact *contact)
 
 	b2Body *bodyA = fixA->GetBody();
 	b2Body *bodyB = fixB->GetBody();
+	
+	if (bodyA->GetType() == b2_dynamicBody)
+	{
+		auto spriteA = (Sprite*)bodyA->GetUserData();
+
+		if (spriteA->getTag() == 3)
+		{
+			SwordMissile *missileSprite = (SwordMissile*)spriteA;
+			missileSprite->endAction(missileSprite->missileNum);
+			bodyA->SetUserData(nullptr);
+
+		}
+		
+
+	}
+	if (bodyB->GetType() == b2_dynamicBody)
+	{
+		auto spriteB = (Sprite*)bodyB->GetUserData();
+
+		if (spriteB->getTag() == 3)
+		{
+			SwordMissile *missileSprite = (SwordMissile*)spriteB;
+			missileSprite->endAction(missileSprite->missileNum);
+			bodyB->SetUserData(nullptr);
+		}
+
+
+	}
+	
+
+	
 	
 
 	//_world->DestroyBody(bodyA);

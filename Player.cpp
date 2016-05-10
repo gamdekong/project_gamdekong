@@ -115,4 +115,5 @@ void Player::init2()
 	this->initWithTexture(playerIdleTexture, Rect(0, 0, 160, 120));
 	this->setPosition(Vec2(300, 200));
 	//this->setAnchorPoint(Vec2(0.5, 0.4));
+	this->setTag(1);
 }

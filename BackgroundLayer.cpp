@@ -268,8 +268,21 @@ void BackgroundLayer::tick(float dt)
 			
 
 		}
+		
 
 	}
+
+	for (vector<b2Body*>::iterator it = missileBodyVector.begin(); it != missileBodyVector.end(); it++)
+	{
+		if ((*it)->GetUserData() == NULL)
+		{
+			_world->DestroyBody((*it));
+			
+		}
+
+	}
+
+
 	//  충돌 처리
 	if (player->getPosition().y < monster->getPosition().y + 30 && player->getPosition().y > monster->getPosition().y - 30)
 	{
@@ -362,19 +375,19 @@ void BackgroundLayer::tick(float dt)
 		//}
 	}
 
-	if (joystick2->getVelocity().x > 0.9 && isAttacking == false)
+
+	if (joystick2->getVelocity().x > 0.9  )
 	{
 		LongAttack(RIGHTLONGATTACK);
+		
 	}
-	else if (joystick2->getVelocity().x < -0.9 && isAttacking == false)
+	else if (joystick2->getVelocity().x < -0.9)
 	{
 		LongAttack(LEFTLONGATTACK);
 	}
 	else if (joystick2->getVelocity().x <0.9 && joystick2->getVelocity().x >-0.9)
 	{
-		this->unschedule(schedule_selector(BackgroundLayer::RightLongAttack));
-		this->unschedule(schedule_selector(BackgroundLayer::LeftLongAttack));
-		isAttacking = false;
+		clickCount = 0;
 	}
 
 		
@@ -421,16 +434,27 @@ void BackgroundLayer::tick(float dt)
 
 void BackgroundLayer::LongAttack(int num)
 {
-	isAttacking = true;
 	switch (num)
 	{
 	case RIGHTLONGATTACK:
-		//this->RightLongAttack(0);
-		this->schedule(schedule_selector(BackgroundLayer::RightLongAttack));
-		this->schedule(schedule_selector(BackgroundLayer::RightLongAttack), player->attackSpeed);
+	
+		if (!this->isScheduled(schedule_selector(BackgroundLayer::RightLongAttack)) && clickCount == 0)
+		{
+			this->RightLongAttack(0);
+			clickCount = 1;
+		}
+		if(!this->isScheduled(schedule_selector(BackgroundLayer::RightLongAttack)))
+			this->scheduleOnce(schedule_selector(BackgroundLayer::RightLongAttack), player->attackSpeed);
+	
 		break;
 	case LEFTLONGATTACK:
-		this->schedule(schedule_selector(BackgroundLayer::LeftLongAttack), player->attackSpeed);
+		if (!this->isScheduled(schedule_selector(BackgroundLayer::LeftLongAttack)) && clickCount == 0)
+		{
+			this->LeftLongAttack(0);
+			clickCount = 1;
+		}
+		if (!this->isScheduled(schedule_selector(BackgroundLayer::LeftLongAttack)))
+			this->scheduleOnce(schedule_selector(BackgroundLayer::LeftLongAttack), player->attackSpeed);
 		break;
 	}
 }
@@ -443,7 +467,10 @@ void BackgroundLayer::RightLongAttack(float dt)
 	missile->setPosition(Vec2(player->getPosition().x + 50.f, player->getPosition().y));
 	missile->setFlipX(true);
 	this->addChild(missile);
-	
+	player->stopAllActions();
+	player->setFlippedX(false);
+	player->AttackAction();
+	missile->startAction(missile->missileNum);
 	//auto move = MoveBy::create(1.75f, Vec2(1500, 0));
 	//missile->runAction(move);
 	
@@ -468,19 +495,21 @@ void BackgroundLayer::RightLongAttack(float dt)
 	//monsterFixtureDef.filter.maskBits = CATEGORY_PLAYER;
 	missileBody->CreateFixture(&missileFixtureDef);
 	missileBody->SetLinearVelocity(b2Vec2(10, 0));
-	//missileBodyVector.push_back(missileBody);
+	missileBodyVector.push_back(missileBody);
 	joystick2->attack = 0;
-
-	this->unschedule(schedule_selector(BackgroundLayer::RightLongAttack));
 }
 void BackgroundLayer::LeftLongAttack(float dt)
 {
-	log("오른쪽 검기");
+	log("왼쪽 검기");
 
 	SwordMissile *missile = new SwordMissile(1);
 	missile->setPosition(Vec2(player->getPosition().x - 50.f, player->getPosition().y));
-	missile->setFlipX(false);
 	this->addChild(missile);
+	player->stopAllActions();
+	player->setFlippedX(true);
+	player->AttackAction();
+	missile->startAction(missile->missileNum);
+	
 
 	//auto move = MoveBy::create(1.75f, Vec2(1500, 0));
 	//missile->runAction(move);
@@ -501,12 +530,12 @@ void BackgroundLayer::LeftLongAttack(float dt)
 	missileFixtureDef.shape = &missilePolygon;
 	missileFixtureDef.density = 0.0f;
 	missileFixtureDef.restitution = 0.5;
-	missileFixtureDef.filter.groupIndex = GROUP_INDEX_PLAYER;
+	missileFixtureDef.filter.groupIndex = GROUP_INDEX_MONSTER;
 	//monsterFixtureDef.filter.categoryBits = CATEGORY_MONSTER;
 	//monsterFixtureDef.filter.maskBits = CATEGORY_PLAYER;
 	missileBody->CreateFixture(&missileFixtureDef);
 	missileBody->SetLinearVelocity(b2Vec2(-10, 0));
-	//missileBodyVector.push_back(missileBody);
+	missileBodyVector.push_back(missileBody);
 	joystick2->attack = 0;
 }
 

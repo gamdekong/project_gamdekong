@@ -63,6 +63,7 @@ public:
 	b2Body *monsterBody;
 	vector<b2Body*> missileBodyVector;
 	ContactListener* myContactListener;
+	int clickCount = 0;
 	int count = 0;
 	bool isAttacking;
 

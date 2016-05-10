@@ -9,6 +9,6 @@ void Monster::init2()
 {
 	this->initWithFile("monster/grossini.png");
 	this->setPosition(Vec2(500, 200));
-
+	this->setTag(2);
 
 }
