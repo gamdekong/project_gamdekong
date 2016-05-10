@@ -1,10 +1,9 @@
 #include "ContactListener.h"
 #include "SwordMissile.h"
 #include "Monster.h"
-#include "Player.h"
 
-ContactListener::ContactListener(b2World *world) {
-	_world = world;
+ContactListener::ContactListener(Player *player) {
+	this->player = player;
 }
 
 ContactListener::~ContactListener() {
@@ -18,7 +17,6 @@ void ContactListener::BeginContact(b2Contact *contact)
 void ContactListener::EndContact(b2Contact *contact)
 {
 
-	log("Contact:End");
 	b2Fixture *fixA = contact->GetFixtureA();
 	b2Fixture *fixB = contact->GetFixtureB();
 
@@ -27,27 +25,56 @@ void ContactListener::EndContact(b2Contact *contact)
 	
 	if (bodyA->GetType() == b2_dynamicBody)
 	{
+		log("Contact:EndA");
+
 		auto spriteA = (Sprite*)bodyA->GetUserData();
 
-		if (spriteA->getTag() == 3)
+		if (spriteA != nullptr)
 		{
-			SwordMissile *missileSprite = (SwordMissile*)spriteA;
-			missileSprite->endAction(missileSprite->missileNum);
-			bodyA->SetUserData(nullptr);
+			if (spriteA->getTag() == 3)
+			{
+				SwordMissile *missileSprite = (SwordMissile*)spriteA;
+				missileSprite->endAction(missileSprite->missileNum);
+				bodyA->SetUserData(nullptr);
 
+			}
+			if (spriteA->getTag() == 2)
+			{
+				Monster *monsterSprite = (Monster*)spriteA;
+				monsterSprite->nowEnergy -= player->power;
+				if (monsterSprite->nowEnergy < 0)
+					bodyA->SetUserData(nullptr);
+				
+
+
+			}
 		}
+		
 		
 
 	}
 	if (bodyB->GetType() == b2_dynamicBody)
 	{
+		log("Contact:EndB");
 		auto spriteB = (Sprite*)bodyB->GetUserData();
-
-		if (spriteB->getTag() == 3)
+		if (spriteB != nullptr)
 		{
-			SwordMissile *missileSprite = (SwordMissile*)spriteB;
-			missileSprite->endAction(missileSprite->missileNum);
-			bodyB->SetUserData(nullptr);
+			if (spriteB->getTag() == 3)
+			{
+				SwordMissile *missileSprite = (SwordMissile*)spriteB;
+				missileSprite->endAction(missileSprite->missileNum);
+				bodyB->SetUserData(nullptr);
+			}
+			if (spriteB->getTag() == 2)
+			{
+				Monster *monsterSprite = (Monster*)spriteB;
+				monsterSprite->nowEnergy -= player->power;
+				if (monsterSprite->nowEnergy < 0)
+					bodyA->SetUserData(nullptr);
+
+
+
+			}
 		}
 
 

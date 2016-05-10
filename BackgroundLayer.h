@@ -52,6 +52,7 @@ public:
 	void LongAttack(int num);
 	void RightLongAttack(float);
 	void LeftLongAttack(float);
+	void clearTime(float);
 
 	b2World *_world;
 	Joystick *joystick1;
@@ -62,6 +63,7 @@ public:
 	b2Body *playerBody;
 	b2Body *monsterBody;
 	vector<b2Body*> missileBodyVector;
+	vector<b2Body*> monsterBodyVector;
 	ContactListener* myContactListener;
 	int clickCount = 0;
 	int count = 0;

@@ -22,7 +22,7 @@ bool BackgroundLayer::init()
 	{
 		return false;
 	}
-
+	missileBodyVector.clear();
 	player = new Player();
 	this->addChild(player, 1);
 	monster = new Monster();
@@ -31,7 +31,7 @@ bool BackgroundLayer::init()
 	if (this->createWorld(true))
 	{
 		this->schedule(schedule_selector(BackgroundLayer::tick));
-		myContactListener = new ContactListener(_world);
+		myContactListener = new ContactListener(player);
 
 		_world->SetContactListener((b2ContactListener*)myContactListener);
 	}
@@ -186,6 +186,7 @@ void BackgroundLayer::createMonster(Sprite * monster)
 	monsterFixtureDef.filter.maskBits = CATEGORY_PLAYER;
 
 	monsterBody->CreateFixture(&monsterFixtureDef);
+	monsterBodyVector.push_back(monsterBody);
 }
 
 void BackgroundLayer::createBackground()
@@ -272,16 +273,48 @@ void BackgroundLayer::tick(float dt)
 
 	}
 
-	for (vector<b2Body*>::iterator it = missileBodyVector.begin(); it != missileBodyVector.end(); it++)
+	//for (vector<b2Body*>::iterator it = missileBodyVector.begin(); it != missileBodyVector.end(); it++)
+	//{
+	//	if ((*it)->GetUserData() == nullptr)
+	//	{
+	//		
+	//		it
+	//		//missileBodyVector.erase(it);
+	//		_world->DestroyBody((*it));
+
+	//	}
+
+	//}
+	for (int i = 0; i < missileBodyVector.size(); i++)
 	{
-		if ((*it)->GetUserData() == NULL)
+	
+		if (missileBodyVector[i]->GetUserData() == nullptr)
 		{
-			_world->DestroyBody((*it));
-			
+			_world->DestroyBody(missileBodyVector[i]);
+			missileBodyVector.erase(missileBodyVector.begin() + i);
+			log("%d", missileBodyVector.size());
 		}
+		//if (missileBodyVector.size() > 0)
+
+			//log("%d", missileBodyVector.size());
 
 	}
 
+	for (int i = 0; i < monsterBodyVector.size(); i++)
+	{
+
+		if (monsterBodyVector[i]->GetUserData() == nullptr)
+		{
+			_world->DestroyBody(monsterBodyVector[i]);
+			monsterBodyVector.erase(monsterBodyVector.begin() + i);
+			log("%d", monsterBodyVector.size());
+		}
+		//if (missileBodyVector.size() > 0)
+
+		//log("%d", missileBodyVector.size());
+
+	}
+	//////////////////////////////////////////////////////////////////// 몬스터 바디 삭제로 인해 에러 발생
 
 	//  충돌 처리
 	if (player->getPosition().y < monster->getPosition().y + 30 && player->getPosition().y > monster->getPosition().y - 30)
@@ -385,12 +418,6 @@ void BackgroundLayer::tick(float dt)
 	{
 		LongAttack(LEFTLONGATTACK);
 	}
-	else if (joystick2->getVelocity().x <0.9 && joystick2->getVelocity().x >-0.9)
-	{
-		clickCount = 0;
-	}
-
-		
 				
 
 	
@@ -407,7 +434,7 @@ void BackgroundLayer::tick(float dt)
 	}
 	else if (joystick1->getVelocity().x < 0)
 	{
-		log("%f", joystick1->getVelocity().x);
+		//log("%f", joystick1->getVelocity().x);
 		if (count == 1)
 		{
 			player->stopAllActions();
@@ -419,7 +446,7 @@ void BackgroundLayer::tick(float dt)
 	}
 	else if (joystick1->getVelocity().x > 0)
 	{
-		log("%f", joystick1->getVelocity().x);
+		//log("%f", joystick1->getVelocity().x);
 		if (count == 1)
 		{
 			player->stopAllActions();
@@ -438,22 +465,23 @@ void BackgroundLayer::LongAttack(int num)
 	{
 	case RIGHTLONGATTACK:
 	
-		if (!this->isScheduled(schedule_selector(BackgroundLayer::RightLongAttack)) && clickCount == 0)
+		if (!this->isScheduled(schedule_selector(BackgroundLayer::RightLongAttack)) &&
+			!this->isScheduled(schedule_selector(BackgroundLayer::clearTime)))
 		{
 			this->RightLongAttack(0);
-			clickCount = 1;
 		}
-		if(!this->isScheduled(schedule_selector(BackgroundLayer::RightLongAttack)))
+		else if (!this->isScheduled(schedule_selector(BackgroundLayer::RightLongAttack)))
 			this->scheduleOnce(schedule_selector(BackgroundLayer::RightLongAttack), player->attackSpeed);
-	
 		break;
+
+
 	case LEFTLONGATTACK:
-		if (!this->isScheduled(schedule_selector(BackgroundLayer::LeftLongAttack)) && clickCount == 0)
+		if (!this->isScheduled(schedule_selector(BackgroundLayer::LeftLongAttack)) &&
+			!this->isScheduled(schedule_selector(BackgroundLayer::clearTime)))
 		{
 			this->LeftLongAttack(0);
-			clickCount = 1;
 		}
-		if (!this->isScheduled(schedule_selector(BackgroundLayer::LeftLongAttack)))
+		else if (!this->isScheduled(schedule_selector(BackgroundLayer::LeftLongAttack)))
 			this->scheduleOnce(schedule_selector(BackgroundLayer::LeftLongAttack), player->attackSpeed);
 		break;
 	}
@@ -466,6 +494,7 @@ void BackgroundLayer::RightLongAttack(float dt)
 	SwordMissile *missile = new SwordMissile(1);
 	missile->setPosition(Vec2(player->getPosition().x + 50.f, player->getPosition().y));
 	missile->setFlipX(true);
+	missile->setAnchorPoint(Vec2(0.8, 0.5));
 	this->addChild(missile);
 	player->stopAllActions();
 	player->setFlippedX(false);
@@ -476,7 +505,7 @@ void BackgroundLayer::RightLongAttack(float dt)
 	
 	b2BodyDef missileBodyDef;
 	missileBodyDef.type = b2_dynamicBody;
-	missileBodyDef.position.Set(missile->getPosition().x / PTM_RATIO, missile->getPosition().y / PTM_RATIO);
+	missileBodyDef.position.Set((missile->getPosition().x) / PTM_RATIO, missile->getPosition().y / PTM_RATIO);
 	missileBodyDef.linearDamping = 0;
 	missileBodyDef.userData = missile;
 	
@@ -484,19 +513,21 @@ void BackgroundLayer::RightLongAttack(float dt)
 	//playerBody->SetMassData(mass);
 	//playerBody->SetGravityScale(0);
 	b2PolygonShape missilePolygon;
-	missilePolygon.SetAsBox((missile->getContentSize().width / 6) / PTM_RATIO, (missile->getContentSize().height / 2) / PTM_RATIO);
+	missilePolygon.SetAsBox((missile->getContentSize().width / 30) / PTM_RATIO, (missile->getContentSize().height / 2) / PTM_RATIO);
 
 	b2FixtureDef missileFixtureDef;
 	missileFixtureDef.shape = &missilePolygon;
 	missileFixtureDef.density = 0.0f;
 	missileFixtureDef.restitution = 0.5;
-	missileFixtureDef.filter.groupIndex = GROUP_INDEX_PLAYER;
+	missileFixtureDef.filter.groupIndex = GROUP_INDEX_MONSTER;
 	//monsterFixtureDef.filter.categoryBits = CATEGORY_MONSTER;
 	//monsterFixtureDef.filter.maskBits = CATEGORY_PLAYER;
 	missileBody->CreateFixture(&missileFixtureDef);
 	missileBody->SetLinearVelocity(b2Vec2(10, 0));
 	missileBodyVector.push_back(missileBody);
 	joystick2->attack = 0;
+	this->scheduleOnce(schedule_selector(BackgroundLayer::clearTime), player->attackSpeed);
+
 }
 void BackgroundLayer::LeftLongAttack(float dt)
 {
@@ -507,6 +538,7 @@ void BackgroundLayer::LeftLongAttack(float dt)
 	this->addChild(missile);
 	player->stopAllActions();
 	player->setFlippedX(true);
+	missile->setAnchorPoint(Vec2(0.2, 0.5));
 	player->AttackAction();
 	missile->startAction(missile->missileNum);
 	
@@ -524,7 +556,7 @@ void BackgroundLayer::LeftLongAttack(float dt)
 	//playerBody->SetMassData(mass);
 	//playerBody->SetGravityScale(0);
 	b2PolygonShape missilePolygon;
-	missilePolygon.SetAsBox((missile->getContentSize().width / 6) / PTM_RATIO, (missile->getContentSize().height / 2) / PTM_RATIO);
+	missilePolygon.SetAsBox((missile->getContentSize().width / 30) / PTM_RATIO, (missile->getContentSize().height / 2) / PTM_RATIO);
 
 	b2FixtureDef missileFixtureDef;
 	missileFixtureDef.shape = &missilePolygon;
@@ -537,5 +569,11 @@ void BackgroundLayer::LeftLongAttack(float dt)
 	missileBody->SetLinearVelocity(b2Vec2(-10, 0));
 	missileBodyVector.push_back(missileBody);
 	joystick2->attack = 0;
+	this->scheduleOnce(schedule_selector(BackgroundLayer::clearTime), player->attackSpeed);
+
+}
+
+void BackgroundLayer::clearTime(float)
+{
 }
 

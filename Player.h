@@ -19,6 +19,7 @@ public:
 
 	int maxEnergy;
 	int nowEnergy;
+	int power;
 	float attackSpeed;
 	SwordMissile *missile;
 	Texture2D *playerMoveTexture;
