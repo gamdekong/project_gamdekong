@@ -99,6 +99,7 @@ void Player::MoveAction()
 
 Player::Player()
 {
+	attackSpeed = 1;
 
 	playerMoveTexture = Director::getInstance()->getTextureCache()->addImage("player/move/move.png");
 	playerAttackTexture = Director::getInstance()->getTextureCache()->addImage("player/attack/attack.png");

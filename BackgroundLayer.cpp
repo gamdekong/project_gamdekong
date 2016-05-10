@@ -313,56 +313,74 @@ void BackgroundLayer::tick(float dt)
 			joystick2->attack = 0;
 
 		}
-		else if (joystick2->attack == RIGHT_LONG_ATTACK)
-		{
-			log("오른쪽 검기");
-			SwordMissile *missile = new SwordMissile(1);
-			missile->setPosition(Vec2(player->getPosition().x + 30.f, player->getPosition().y));
-			missile->setFlipX(true);
-			this->addChild(missile);
-			
-			//auto move = MoveBy::create(1.75f, Vec2(1500, 0));
-			//missile->runAction(move);
+		//else if (joystick2->attack == RIGHT_LONG_ATTACK)
+		//{
+		//	log("오른쪽 검기");
+		//	SwordMissile *missile = new SwordMissile(1);
+		//	missile->setPosition(Vec2(player->getPosition().x + 30.f, player->getPosition().y));
+		//	missile->setFlipX(true);
+		//	this->addChild(missile);
+		//	
+		//	//auto move = MoveBy::create(1.75f, Vec2(1500, 0));
+		//	//missile->runAction(move);
 
 
-			b2BodyDef missileBodyDef;
-			missileBodyDef.type = b2_dynamicBody;
-			missileBodyDef.position.Set(missile->getPosition().x / PTM_RATIO, missile->getPosition().y / PTM_RATIO);
-			missileBodyDef.linearDamping = 0;
-			missileBodyDef.userData = missile;
+		//	b2BodyDef missileBodyDef;
+		//	missileBodyDef.type = b2_dynamicBody;
+		//	missileBodyDef.position.Set(missile->getPosition().x / PTM_RATIO, missile->getPosition().y / PTM_RATIO);
+		//	missileBodyDef.linearDamping = 0;
+		//	missileBodyDef.userData = missile;
 
 
-			auto missileBody = _world->CreateBody(&missileBodyDef);
+		//	auto missileBody = _world->CreateBody(&missileBodyDef);
 
-			//playerBody->SetMassData(mass);
-			//playerBody->SetGravityScale(0);
+		//	//playerBody->SetMassData(mass);
+		//	//playerBody->SetGravityScale(0);
 
-			b2PolygonShape missilePolygon;
-			missilePolygon.SetAsBox((missile->getContentSize().width / 6) / PTM_RATIO, (missile->getContentSize().height / 2) / PTM_RATIO);
-			
+		//	b2PolygonShape missilePolygon;
+		//	missilePolygon.SetAsBox((missile->getContentSize().width / 6) / PTM_RATIO, (missile->getContentSize().height / 2) / PTM_RATIO);
+		//	
 
-			b2FixtureDef missileFixtureDef;
-			missileFixtureDef.shape = &missilePolygon;
-			missileFixtureDef.density = 0.0f;
-			missileFixtureDef.restitution = 0.5;
-			missileFixtureDef.filter.groupIndex = GROUP_INDEX_PLAYER;
-			//monsterFixtureDef.filter.categoryBits = CATEGORY_MONSTER;
-			//monsterFixtureDef.filter.maskBits = CATEGORY_PLAYER;
+		//	b2FixtureDef missileFixtureDef;
+		//	missileFixtureDef.shape = &missilePolygon;
+		//	missileFixtureDef.density = 0.0f;
+		//	missileFixtureDef.restitution = 0.5;
+		//	missileFixtureDef.filter.groupIndex = GROUP_INDEX_PLAYER;
+		//	//monsterFixtureDef.filter.categoryBits = CATEGORY_MONSTER;
+		//	//monsterFixtureDef.filter.maskBits = CATEGORY_PLAYER;
 
-			missileBody->CreateFixture(&missileFixtureDef);
-			missileBody->SetLinearVelocity(b2Vec2(10, 0));
-			//missileBodyVector.push_back(missileBody);
+		//	missileBody->CreateFixture(&missileFixtureDef);
+		//	missileBody->SetLinearVelocity(b2Vec2(10, 0));
+		//	//missileBodyVector.push_back(missileBody);
 
-			joystick2->attack = 0;
-		}
-		else if (joystick2->attack == LEFT_LONG_ATTACK)
-		{
-			log("왼쪽 검기");
-			joystick2->attack = 0;
-		}
+		//	joystick2->attack = 0;
+		//}
+		//else if (joystick2->attack == LEFT_LONG_ATTACK)
+		//{
+		//	log("왼쪽 검기");
+		//	joystick2->attack = 0;
+		//}
+	}
+
+	if (joystick2->getVelocity().x > 0.9 && isAttacking == false)
+	{
+		LongAttack(RIGHTLONGATTACK);
+	}
+	else if (joystick2->getVelocity().x < -0.9 && isAttacking == false)
+	{
+		LongAttack(LEFTLONGATTACK);
+	}
+	else if (joystick2->getVelocity().x <0.9 && joystick2->getVelocity().x >-0.9)
+	{
+		this->unschedule(schedule_selector(BackgroundLayer::RightLongAttack));
+		this->unschedule(schedule_selector(BackgroundLayer::LeftLongAttack));
+		isAttacking = false;
+	}
+
+		
 				
 
-	}
+	
 
 
 	// 캐릭터 이동 관련 부분
@@ -399,5 +417,96 @@ void BackgroundLayer::tick(float dt)
 
 	}
 
+}
+
+void BackgroundLayer::LongAttack(int num)
+{
+	isAttacking = true;
+	switch (num)
+	{
+	case RIGHTLONGATTACK:
+		//this->RightLongAttack(0);
+		this->schedule(schedule_selector(BackgroundLayer::RightLongAttack));
+		this->schedule(schedule_selector(BackgroundLayer::RightLongAttack), player->attackSpeed);
+		break;
+	case LEFTLONGATTACK:
+		this->schedule(schedule_selector(BackgroundLayer::LeftLongAttack), player->attackSpeed);
+		break;
+	}
+}
+
+void BackgroundLayer::RightLongAttack(float dt)
+{
+	log("오른쪽 검기");
+
+	SwordMissile *missile = new SwordMissile(1);
+	missile->setPosition(Vec2(player->getPosition().x + 50.f, player->getPosition().y));
+	missile->setFlipX(true);
+	this->addChild(missile);
+	
+	//auto move = MoveBy::create(1.75f, Vec2(1500, 0));
+	//missile->runAction(move);
+	
+	b2BodyDef missileBodyDef;
+	missileBodyDef.type = b2_dynamicBody;
+	missileBodyDef.position.Set(missile->getPosition().x / PTM_RATIO, missile->getPosition().y / PTM_RATIO);
+	missileBodyDef.linearDamping = 0;
+	missileBodyDef.userData = missile;
+	
+	auto missileBody = _world->CreateBody(&missileBodyDef);
+	//playerBody->SetMassData(mass);
+	//playerBody->SetGravityScale(0);
+	b2PolygonShape missilePolygon;
+	missilePolygon.SetAsBox((missile->getContentSize().width / 6) / PTM_RATIO, (missile->getContentSize().height / 2) / PTM_RATIO);
+
+	b2FixtureDef missileFixtureDef;
+	missileFixtureDef.shape = &missilePolygon;
+	missileFixtureDef.density = 0.0f;
+	missileFixtureDef.restitution = 0.5;
+	missileFixtureDef.filter.groupIndex = GROUP_INDEX_PLAYER;
+	//monsterFixtureDef.filter.categoryBits = CATEGORY_MONSTER;
+	//monsterFixtureDef.filter.maskBits = CATEGORY_PLAYER;
+	missileBody->CreateFixture(&missileFixtureDef);
+	missileBody->SetLinearVelocity(b2Vec2(10, 0));
+	//missileBodyVector.push_back(missileBody);
+	joystick2->attack = 0;
+
+	this->unschedule(schedule_selector(BackgroundLayer::RightLongAttack));
+}
+void BackgroundLayer::LeftLongAttack(float dt)
+{
+	log("오른쪽 검기");
+
+	SwordMissile *missile = new SwordMissile(1);
+	missile->setPosition(Vec2(player->getPosition().x - 50.f, player->getPosition().y));
+	missile->setFlipX(false);
+	this->addChild(missile);
+
+	//auto move = MoveBy::create(1.75f, Vec2(1500, 0));
+	//missile->runAction(move);
+
+	b2BodyDef missileBodyDef;
+	missileBodyDef.type = b2_dynamicBody;
+	missileBodyDef.position.Set(missile->getPosition().x / PTM_RATIO, missile->getPosition().y / PTM_RATIO);
+	missileBodyDef.linearDamping = 0;
+	missileBodyDef.userData = missile;
+
+	auto missileBody = _world->CreateBody(&missileBodyDef);
+	//playerBody->SetMassData(mass);
+	//playerBody->SetGravityScale(0);
+	b2PolygonShape missilePolygon;
+	missilePolygon.SetAsBox((missile->getContentSize().width / 6) / PTM_RATIO, (missile->getContentSize().height / 2) / PTM_RATIO);
+
+	b2FixtureDef missileFixtureDef;
+	missileFixtureDef.shape = &missilePolygon;
+	missileFixtureDef.density = 0.0f;
+	missileFixtureDef.restitution = 0.5;
+	missileFixtureDef.filter.groupIndex = GROUP_INDEX_PLAYER;
+	//monsterFixtureDef.filter.categoryBits = CATEGORY_MONSTER;
+	//monsterFixtureDef.filter.maskBits = CATEGORY_PLAYER;
+	missileBody->CreateFixture(&missileFixtureDef);
+	missileBody->SetLinearVelocity(b2Vec2(-10, 0));
+	//missileBodyVector.push_back(missileBody);
+	joystick2->attack = 0;
 }
 

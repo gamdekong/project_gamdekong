@@ -1,7 +1,8 @@
 #pragma once
 #include "cocos2d.h"
-
+#include "SwordMissile.h"
 using namespace cocos2d;
+
 
 class Player : public cocos2d::Sprite
 {
@@ -18,6 +19,8 @@ public:
 
 	int maxEnergy;
 	int nowEnergy;
+	float attackSpeed;
+	SwordMissile *missile;
 	Texture2D *playerMoveTexture;
 	Texture2D *playerAttackTexture;
 	Texture2D *playerIdleTexture;

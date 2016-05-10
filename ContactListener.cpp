@@ -14,6 +14,7 @@ void ContactListener::BeginContact(b2Contact *contact)
 
 void ContactListener::EndContact(b2Contact *contact)
 {
+
 	log("Contact:End");
 	b2Fixture *fixA = contact->GetFixtureA();
 	b2Fixture *fixB = contact->GetFixtureB();

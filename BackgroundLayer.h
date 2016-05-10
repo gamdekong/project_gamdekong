@@ -15,6 +15,8 @@
 #define PTM_RATIO 32
 #define GROUP_INDEX_PLAYER -10
 #define GROUP_INDEX_MONSTER 10
+#define RIGHTLONGATTACK 100
+#define LEFTLONGATTACK 200
 
 
 #define CATEGORY_PLAYER 0x0001
@@ -47,6 +49,9 @@ public:
 	void createPlayer(Sprite *player);
 	void createMonster(Sprite *monster);
 	void createBackground();
+	void LongAttack(int num);
+	void RightLongAttack(float);
+	void LeftLongAttack(float);
 
 	b2World *_world;
 	Joystick *joystick1;
@@ -59,6 +64,7 @@ public:
 	vector<b2Body*> missileBodyVector;
 	ContactListener* myContactListener;
 	int count = 0;
+	bool isAttacking;
 
 
 	//for debugging
