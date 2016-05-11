@@ -118,24 +118,7 @@ bool Joystick::handleLastTouch()
     bool wasPressed = isPressed;
 
 
-	if (wasPressed)
-	{
-
-		if (this->getVelocity().x > 0.9)
-		{
-			attack = RIGHT_LONG_ATTACK;
-		}
-		else if (this->getVelocity().x < -0.9)
-		{
-			attack = LEFT_LONG_ATTACK;
-		}
-		else
-		{
-			attack = SHORT_ATTACK;
-			//joystick2->handleLastTouch();
-
-		}
-	}
+	
     if (wasPressed)
     {
         this->resetJoystick();
@@ -158,30 +141,51 @@ void Joystick::setisPressed()
 
 void Joystick::onTouchesBegan(const std::vector<Touch*>& touches, Event  *event)
 {
-    Touch* touch = touches[0];
-    Vec2 touchPoint = touch->getLocation();
+	for (auto &item : touches)
+	{
+		auto touch = item;
+		Vec2 touchPoint = touch->getLocation();
+
+		if (isPointInCircle(touchPoint, kCenter, JOYSTICK_RADIUS))
+		{
+			isPressed = true;
+			this->updateVelocity(touchPoint);
+		}
+	}
+
     
-    if (isPointInCircle(touchPoint, kCenter, JOYSTICK_RADIUS))
-    {
-        isPressed = true;
-        this->updateVelocity(touchPoint);
-    }
+    
 }
 
 void Joystick::onTouchesMoved(const std::vector<Touch*>& touches, Event  *event)
 {
-    if (isPressed)
-    {
-        Touch* touch = touches[0];
-        Vec2 touchPoint = touch->getLocation();
+	for (auto &item : touches)
+	{
+		
+		if (isPressed)
+		{
+			auto touch = item;
+			Vec2 touchPoint = touch->getLocation();
 
-        this->updateVelocity(touchPoint);
-    }
+			this->updateVelocity(touchPoint);
+		}
+
+	}
+
+    
 }
 
 void Joystick::onTouchesEnded(const std::vector<Touch*>& touches, Event  *event)
 {
-    this->handleLastTouch();
+	for (auto &item : touches)
+	{
+
+		auto touch = item;
+		Vec2 touchPoint = touch->getLocation();
+		this->handleLastTouch();
+
+
+	}
 }
 
 void Joystick::onTouchesCancelled(const std::vector<Touch*>& touches, Event  *event)

@@ -23,10 +23,20 @@ bool BackgroundLayer::init()
 		return false;
 	}
 	missileBodyVector.clear();
+	monsterBodyVector.clear();
+
+
 	player = new Player();
 	this->addChild(player, 1);
-	monster = new Monster();
-	this->addChild(monster, 1);
+
+	auto monster2 = new Monster(2);
+	monster2->setPosition(Vec2(800, 300));
+	this->addChild(monster2, 1);
+	auto monster1 = new Monster(1);
+	monster1->setPosition(Vec2(500, 200));
+	this->addChild(monster1, 1);
+
+	
 	
 	if (this->createWorld(true))
 	{
@@ -35,10 +45,12 @@ bool BackgroundLayer::init()
 
 		_world->SetContactListener((b2ContactListener*)myContactListener);
 	}
-	this->createPlayer(player);  //바디 생성
-	this->createMonster(monster);
 
-	//this->createBackground();   //배경 이미지 생성
+	this->createPlayer(player);  //바디 생성
+	this->createMonster(monster1);
+	this->createMonster(monster2);
+
+	this->createBackground();   //배경 이미지 생성
 	this->runAction(Follow::create(player, Rect(0, 0, 1500, 720)));  //카메라 이동
 
 
@@ -169,14 +181,14 @@ void BackgroundLayer::createMonster(Sprite * monster)
 	monsterBodyDef.userData = monster;
 
 
-	monsterBody = _world->CreateBody(&monsterBodyDef);
+	auto monsterBody = _world->CreateBody(&monsterBodyDef);
 
 	//playerBody->SetMassData(mass);
 	//playerBody->SetGravityScale(0);
 
 	b2PolygonShape monsterPolygon;
-	monsterPolygon.SetAsBox((monster->getContentSize().width / 6) / PTM_RATIO, (monster->getContentSize().height / 2) / PTM_RATIO);
-	log(" %f ", (monster->getContentSize().height / 2.5));
+	monsterPolygon.SetAsBox((monster->getContentSize().width / 3) / PTM_RATIO, (monster->getContentSize().height / 2) / PTM_RATIO);
+	//log(" %f ", (monster->getContentSize().height / 2.5));
 
 	b2FixtureDef monsterFixtureDef;
 	monsterFixtureDef.shape = &monsterPolygon;
@@ -187,6 +199,8 @@ void BackgroundLayer::createMonster(Sprite * monster)
 
 	monsterBody->CreateFixture(&monsterFixtureDef);
 	monsterBodyVector.push_back(monsterBody);
+	auto mon = (Monster*)monster;
+	mon->IdleAction();
 }
 
 void BackgroundLayer::createBackground()
@@ -285,6 +299,8 @@ void BackgroundLayer::tick(float dt)
 	//	}
 
 	//}
+
+	//미사일 바디 삭제와 벡터에서의 바디 삭제
 	for (int i = 0; i < missileBodyVector.size(); i++)
 	{
 	
@@ -292,7 +308,7 @@ void BackgroundLayer::tick(float dt)
 		{
 			_world->DestroyBody(missileBodyVector[i]);
 			missileBodyVector.erase(missileBodyVector.begin() + i);
-			log("%d", missileBodyVector.size());
+			//log("%d", missileBodyVector.size());
 		}
 		//if (missileBodyVector.size() > 0)
 
@@ -300,53 +316,60 @@ void BackgroundLayer::tick(float dt)
 
 	}
 
+
+	//////////////////////////////////////////////////////////////////// 몬스터 바디 삭제로 인해 에러 발생
+
+
 	for (int i = 0; i < monsterBodyVector.size(); i++)
 	{
 
 		if (monsterBodyVector[i]->GetUserData() == nullptr)
 		{
+			log("1%d", monsterBodyVector.size());
+
 			_world->DestroyBody(monsterBodyVector[i]);
+			log("2%d", monsterBodyVector.size());
+
 			monsterBodyVector.erase(monsterBodyVector.begin() + i);
-			log("%d", monsterBodyVector.size());
 		}
-		//if (missileBodyVector.size() > 0)
-
-		//log("%d", missileBodyVector.size());
 
 	}
-	//////////////////////////////////////////////////////////////////// 몬스터 바디 삭제로 인해 에러 발생
-
-	//  충돌 처리
-	if (player->getPosition().y < monster->getPosition().y + 30 && player->getPosition().y > monster->getPosition().y - 30)
+	for (int i = 0; i < monsterBodyVector.size(); i++)
 	{
-		//log("dddd");
-		auto newFilter = new b2Filter();
-		auto oldFilter = new b2Filter();
-		*oldFilter = monsterBody->GetFixtureList()->GetFilterData();
-		newFilter = oldFilter;
-		newFilter->maskBits = CATEGORY_PLAYER;
-		monsterBody->GetFixtureList()->SetFilterData(*newFilter);
-	}
-	else
-	{
-		auto newFilter = new b2Filter();
-		auto oldFilter = new b2Filter();
-		*oldFilter = monsterBody->GetFixtureList()->GetFilterData();
-		newFilter = oldFilter;
-		newFilter->maskBits = 200;
-		monsterBody->GetFixtureList()->SetFilterData(*newFilter);
+
+		Monster *monster = (Monster*)(monsterBodyVector[i]->GetUserData());
+
+		//  충돌 처리
+		if (player->getPosition().y < monster->getPosition().y + 30 && player->getPosition().y > monster->getPosition().y -30)
+		{
+			//log("dddd");
+			auto newFilter = new b2Filter();
+			auto oldFilter = new b2Filter();
+			*oldFilter = monsterBodyVector[i]->GetFixtureList()->GetFilterData();
+			newFilter = oldFilter;
+			newFilter->maskBits = CATEGORY_PLAYER;
+			monsterBodyVector[i]->GetFixtureList()->SetFilterData(*newFilter);
+		}
+		else
+		{
+			auto newFilter = new b2Filter();
+			auto oldFilter = new b2Filter();
+			*oldFilter = monsterBodyVector[i]->GetFixtureList()->GetFilterData();
+			newFilter = oldFilter;
+			newFilter->maskBits = 200;
+			monsterBodyVector[i]->GetFixtureList()->SetFilterData(*newFilter);
+
+		}
+
+		// ZOrder 처리
+		if (player->getPosition().y > monster->getPosition().y + 30)
+			player->setZOrder(monster->getZOrder() - 1);
+		else if (player->getPosition().y < monster->getPosition().y + 30)
+			player->setZOrder(monster->getZOrder() + 1);
+
+
 
 	}
-
-	// ZOrder 처리
-	if (player->getPosition().y > monster->getPosition().y+30)
-		player->setZOrder(monster->getZOrder() - 1);
-	else if(player->getPosition().y < monster->getPosition().y+30)
-		player->setZOrder(monster->getZOrder() + 1);
-
-	
-
-
 
 
 	// 캐릭터 공격 관련 부분
@@ -513,7 +536,7 @@ void BackgroundLayer::RightLongAttack(float dt)
 	//playerBody->SetMassData(mass);
 	//playerBody->SetGravityScale(0);
 	b2PolygonShape missilePolygon;
-	missilePolygon.SetAsBox((missile->getContentSize().width / 30) / PTM_RATIO, (missile->getContentSize().height / 2) / PTM_RATIO);
+	missilePolygon.SetAsBox((missile->getContentSize().width / 30) / PTM_RATIO, (missile->getContentSize().height / 3) / PTM_RATIO);
 
 	b2FixtureDef missileFixtureDef;
 	missileFixtureDef.shape = &missilePolygon;
@@ -556,7 +579,7 @@ void BackgroundLayer::LeftLongAttack(float dt)
 	//playerBody->SetMassData(mass);
 	//playerBody->SetGravityScale(0);
 	b2PolygonShape missilePolygon;
-	missilePolygon.SetAsBox((missile->getContentSize().width / 30) / PTM_RATIO, (missile->getContentSize().height / 2) / PTM_RATIO);
+	missilePolygon.SetAsBox((missile->getContentSize().width / 30) / PTM_RATIO, (missile->getContentSize().height / 3) / PTM_RATIO);
 
 	b2FixtureDef missileFixtureDef;
 	missileFixtureDef.shape = &missilePolygon;

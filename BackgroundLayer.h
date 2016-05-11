@@ -58,10 +58,8 @@ public:
 	Joystick *joystick1;
 	Joystick *joystick2;
 	Player *player;
-	Monster *monster;
-	Sprite *pSprite;
+	//Sprite *pSprite;
 	b2Body *playerBody;
-	b2Body *monsterBody;
 	vector<b2Body*> missileBodyVector;
 	vector<b2Body*> monsterBodyVector;
 	ContactListener* myContactListener;

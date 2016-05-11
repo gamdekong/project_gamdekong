@@ -43,8 +43,12 @@ void ContactListener::EndContact(b2Contact *contact)
 				Monster *monsterSprite = (Monster*)spriteA;
 				monsterSprite->nowEnergy -= player->power;
 				if (monsterSprite->nowEnergy < 0)
+				{
+					monsterSprite->DeadAction();
 					bodyA->SetUserData(nullptr);
-				
+				}
+				else
+					monsterSprite->HittedAction();
 
 
 			}
@@ -70,8 +74,12 @@ void ContactListener::EndContact(b2Contact *contact)
 				Monster *monsterSprite = (Monster*)spriteB;
 				monsterSprite->nowEnergy -= player->power;
 				if (monsterSprite->nowEnergy < 0)
+				{
+					monsterSprite->DeadAction();
 					bodyA->SetUserData(nullptr);
-
+				}
+				else
+					monsterSprite->HittedAction();
 
 
 			}
