@@ -21,6 +21,8 @@
 
 using namespace cocos2d;
 
+
+
 class HelloWorld : public cocos2d::Layer
 {
 public:
@@ -32,10 +34,12 @@ public:
     CREATE_FUNC(HelloWorld);
 
 	
-	
 	//b2World *_world;
 	Joystick *joystick1;
 	Joystick *joystick2;
+	vector<int> touchNum;
+	//vector<int> joyNum;
+	int joyNum[5] = { 10 };
 	//Player *player;
 	//Sprite *pSprite;
 	//b2Body *playerBody;
@@ -49,6 +53,7 @@ public:
 	bool isPressed1,isPressed2;
 
 	Vec2 velocity1, velocity2;
+	
 
 	void updateVelocity1(Vec2 point);
 	void updateVelocity2(Vec2 point);
@@ -67,5 +72,7 @@ public:
 	//virtual void onTouchesCancelled(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event* event);
 
 };
+
+
 
 #endif // __HELLOWORLD_SCENE_H__

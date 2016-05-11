@@ -2,6 +2,7 @@
 
 USING_NS_CC;
 
+
 Scene* HelloWorld::createScene()
 {
    
@@ -24,7 +25,7 @@ bool HelloWorld::init()
     }
 
 	auto winsize = Director::getInstance()->getWinSize();
-	//player = new Player();
+		//player = new Player();
 	//this->addChild(player,1);
 	//this->runAction(Follow::create(player,Rect(0, 0,1500, 720)));
 
@@ -154,6 +155,8 @@ void HelloWorld::resetJoystick1()
 }
 void HelloWorld::resetJoystick2()
 {
+	log("2");
+
 	this->updateVelocity2(kCenter2);
 }
 
@@ -201,20 +204,30 @@ void HelloWorld::onTouchesBegan(const std::vector<Touch*>& touches, Event  *even
 {
 	for (auto &item : touches)
 	{
+		
 		auto touch = item;
+		
 		Vec2 point = touch->getLocationInView();
 		Vec2 touchPoint = Director::getInstance()->convertToGL(point);
 
-		if (isPointInCircle(touchPoint, kCenter1, JOYSTICK_RADIUS))
+		if (isPointInCircle(touchPoint, kCenter1, JOYSTICK_RADIUS) )
 		{
 			isPressed1 = true;
+			touchNum.push_back(touch->getID());
+			joyNum[touch->getID()]=1;
+			
 			this->updateVelocity1(touchPoint);
+			
 		}
 		if (isPointInCircle(touchPoint, kCenter2, JOYSTICK_RADIUS))
 		{
 			isPressed2 = true;
+			touchNum.push_back(touch->getID());
+			joyNum[touch->getID()] = 2;
+			
 			this->updateVelocity2(touchPoint);
 		}
+		
 	}
 
 
@@ -225,24 +238,32 @@ void HelloWorld::onTouchesMoved(const std::vector<Touch*>& touches, Event  *even
 {
 	for (auto &item : touches)
 	{
+		
+		auto touch = item;
 
-		if (isPressed1)
+		
+
+		if (isPressed1 && joyNum[touch->getID()] == 1)
 		{
-			auto touch = item;
+			
 			Vec2 point = touch->getLocationInView();
 			Vec2 touchPoint = Director::getInstance()->convertToGL(point);
 
 			this->updateVelocity1(touchPoint);
+			
 		}
-		if (isPressed2)
+		if (isPressed2 && joyNum[touch->getID()] == 2)
 		{
-			auto touch = item;
+			
 			Vec2 point = touch->getLocationInView();
 			Vec2 touchPoint = Director::getInstance()->convertToGL(point);
 
 			this->updateVelocity2(touchPoint);
+			
 		}
-
+		
+		
+	
 	}
 
 
@@ -252,23 +273,29 @@ void HelloWorld::onTouchesEnded(const std::vector<Touch*>& touches, Event  *even
 {
 	for (auto &item : touches)
 	{
-		if (isPressed1)
+		auto touch = item;
+
+		if (isPressed1 && joyNum[touch->getID()] == 1)
 		{
-			auto touch = item;
 			Vec2 point = touch->getLocationInView();
 			Vec2 touchPoint = Director::getInstance()->convertToGL(point);
 			this->handleLastTouch1();
+			joyNum[touch->getID()] = 10;
+			
 		}
-		if (isPressed2)
+		if (isPressed2 && joyNum[touch->getID()] == 2)
 		{
-			auto touch = item;
 			Vec2 point = touch->getLocationInView();
 			Vec2 touchPoint = Director::getInstance()->convertToGL(point);
 			this->handleLastTouch2();
+			joyNum[touch->getID()] = 10;
+			
 		}
+
+
 		
 
 
 	}
+	
 }
-
