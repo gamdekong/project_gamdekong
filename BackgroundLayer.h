@@ -55,8 +55,10 @@ public:
 	void clearTime(float);
 
 	b2World *_world;
-	Joystick *joystick1;
-	Joystick *joystick2;
+	//Joystick *joystick1;
+	//Joystick *joystick2;
+	Vec2 *joystickVelocity1, *joystickVelocity2;
+	bool *joystickIspressed1, *joystickIspressed2;
 	Player *player;
 	//Sprite *pSprite;
 	b2Body *playerBody;

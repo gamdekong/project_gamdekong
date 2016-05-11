@@ -274,8 +274,8 @@ void BackgroundLayer::tick(float dt)
 
 			if (b->GetUserData() == player)
 			{
-				float vx = joystick1->getVelocity().x * 5;//스피드
-				float vy = joystick1->getVelocity().y * 5;
+				float vx = joystickVelocity1->x* 5;//스피드
+				float vy = joystickVelocity1->y * 5;
 				//set ball velocity by Joystick
 				b->SetLinearVelocity(b2Vec2(vx, vy) + (b->GetLinearVelocity()));
 
@@ -373,7 +373,7 @@ void BackgroundLayer::tick(float dt)
 
 
 	// 캐릭터 공격 관련 부분
-	if (!joystick2->getisPressed() && joystick2->attack != 0)
+	/*if (!joystickIspressed2 && joystick2->attack != 0)
 	{
 		if (joystick2->attack == SHORT_ATTACK)
 		{
@@ -382,62 +382,17 @@ void BackgroundLayer::tick(float dt)
 			joystick2->attack = 0;
 
 		}
-		//else if (joystick2->attack == RIGHT_LONG_ATTACK)
-		//{
-		//	log("오른쪽 검기");
-		//	SwordMissile *missile = new SwordMissile(1);
-		//	missile->setPosition(Vec2(player->getPosition().x + 30.f, player->getPosition().y));
-		//	missile->setFlipX(true);
-		//	this->addChild(missile);
-		//	
-		//	//auto move = MoveBy::create(1.75f, Vec2(1500, 0));
-		//	//missile->runAction(move);
+		
+	
+	}*/
 
 
-		//	b2BodyDef missileBodyDef;
-		//	missileBodyDef.type = b2_dynamicBody;
-		//	missileBodyDef.position.Set(missile->getPosition().x / PTM_RATIO, missile->getPosition().y / PTM_RATIO);
-		//	missileBodyDef.linearDamping = 0;
-		//	missileBodyDef.userData = missile;
-
-
-		//	auto missileBody = _world->CreateBody(&missileBodyDef);
-
-		//	//playerBody->SetMassData(mass);
-		//	//playerBody->SetGravityScale(0);
-
-		//	b2PolygonShape missilePolygon;
-		//	missilePolygon.SetAsBox((missile->getContentSize().width / 6) / PTM_RATIO, (missile->getContentSize().height / 2) / PTM_RATIO);
-		//	
-
-		//	b2FixtureDef missileFixtureDef;
-		//	missileFixtureDef.shape = &missilePolygon;
-		//	missileFixtureDef.density = 0.0f;
-		//	missileFixtureDef.restitution = 0.5;
-		//	missileFixtureDef.filter.groupIndex = GROUP_INDEX_PLAYER;
-		//	//monsterFixtureDef.filter.categoryBits = CATEGORY_MONSTER;
-		//	//monsterFixtureDef.filter.maskBits = CATEGORY_PLAYER;
-
-		//	missileBody->CreateFixture(&missileFixtureDef);
-		//	missileBody->SetLinearVelocity(b2Vec2(10, 0));
-		//	//missileBodyVector.push_back(missileBody);
-
-		//	joystick2->attack = 0;
-		//}
-		//else if (joystick2->attack == LEFT_LONG_ATTACK)
-		//{
-		//	log("왼쪽 검기");
-		//	joystick2->attack = 0;
-		//}
-	}
-
-
-	if (joystick2->getVelocity().x > 0.9  )
+	if (joystickVelocity2->x > 0.9  )
 	{
 		LongAttack(RIGHTLONGATTACK);
 		
 	}
-	else if (joystick2->getVelocity().x < -0.9)
+	else if (joystickVelocity2->x < -0.9)
 	{
 		LongAttack(LEFTLONGATTACK);
 	}
@@ -447,7 +402,7 @@ void BackgroundLayer::tick(float dt)
 
 
 	// 캐릭터 이동 관련 부분
-	if (joystick1->getVelocity().x == 0 && joystick1->getVelocity().y == 0 && count == 0)
+	if (joystickVelocity1->x == 0 && joystickVelocity1->y == 0 && count == 0)
 	{
 		
 		player->stopAllActions();
@@ -455,7 +410,7 @@ void BackgroundLayer::tick(float dt)
 		count = 1;
 
 	}
-	else if (joystick1->getVelocity().x < 0)
+	else if (joystickVelocity1->x < 0)
 	{
 		//log("%f", joystick1->getVelocity().x);
 		if (count == 1)
@@ -467,7 +422,7 @@ void BackgroundLayer::tick(float dt)
 		player->setFlippedX(true);
 
 	}
-	else if (joystick1->getVelocity().x > 0)
+	else if (joystickVelocity1->x > 0)
 	{
 		//log("%f", joystick1->getVelocity().x);
 		if (count == 1)
@@ -548,7 +503,7 @@ void BackgroundLayer::RightLongAttack(float dt)
 	missileBody->CreateFixture(&missileFixtureDef);
 	missileBody->SetLinearVelocity(b2Vec2(10, 0));
 	missileBodyVector.push_back(missileBody);
-	joystick2->attack = 0;
+	//joystick2->attack = 0;
 	this->scheduleOnce(schedule_selector(BackgroundLayer::clearTime), player->attackSpeed);
 
 }
@@ -591,7 +546,7 @@ void BackgroundLayer::LeftLongAttack(float dt)
 	missileBody->CreateFixture(&missileFixtureDef);
 	missileBody->SetLinearVelocity(b2Vec2(-10, 0));
 	missileBodyVector.push_back(missileBody);
-	joystick2->attack = 0;
+	//joystick2->attack = 0;
 	this->scheduleOnce(schedule_selector(BackgroundLayer::clearTime), player->attackSpeed);
 
 }

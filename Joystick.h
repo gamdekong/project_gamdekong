@@ -26,29 +26,14 @@ public:
     virtual bool init();
     CREATE_FUNC(Joystick);
 
-    Vec2 getVelocity(){ return velocity; }
+   // Vec2 getVelocity(){ return velocity; }
 	bool getisPressed();
 	void setisPressed();
-	bool handleLastTouch();
 	int joyNum;
 	int attack;
 private:
 
-    Vec2 kCenter;
-    Sprite* thumb;
-    bool isPressed;
-    
-    Vec2 velocity;
-    
-    void updateVelocity(Vec2 point);
-    void resetJoystick();
-  
-	
-
-    virtual void onTouchesBegan(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event* event);
-    virtual void onTouchesMoved(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event* event);
-    virtual void onTouchesEnded(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event* event);
-    virtual void onTouchesCancelled(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event* event);
+   
 };
 
 #endif
