@@ -12,7 +12,7 @@
 #define JOYSTICK_OFFSET_Y 5.0f
 
 #define JOYSTICK_RADIUS 64.0f
-#define THUMB_RADIUS 26.0f
+#define THUMB_RADIUS 40.0f  //레버가 움직이는 범위
 
 #define PTM_RATIO 32
 //#define SHORT_ATTACK 1

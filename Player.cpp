@@ -24,25 +24,7 @@ void Player::IdleAction()
 
 void Player::AttackAction()
 {
-	//--------ÈÞ½Ä
-	auto animation2 = Animation::create();
-	animation2->setDelayPerUnit(0.2);
-	for (int i = 0; i < 4; i++)
-	{
-		int column = i % 4;
-
-		animation2->addSpriteFrameWithTexture(playerIdleTexture, Rect(160 * column, 0, 160, 120));
-	}
-
-	auto animate2 = Animate::create(animation2);
-
-	auto seq2 = Sequence::create(animate2, nullptr);
-	auto playerIdleSeq = RepeatForever::create(seq2);
-
-
-	/////////////////////////////////////////
-
-	
+		
 	auto animation3 = Animation::create();
 	animation3->setDelayPerUnit(0.1);
 	for (int i = 0; i < 4; i++)
@@ -54,8 +36,7 @@ void Player::AttackAction()
 
 	auto animate3 = Animate::create(animation3);
 
-	auto seq3 = Sequence::create(animate3, animate2, animate2, animate2, animate2, animate2, animate2,
-		animate2, animate2, animate2, animate2, animate2, animate2,nullptr);
+	auto seq3 = Sequence::create(animate3, CallFunc::create(CC_CALLBACK_0(Player::IdleAction,this)),nullptr);
 	//auto playerAttackSeq = RepeatForever::create(seq3);
 	this->runAction(seq3);
 }
@@ -100,6 +81,7 @@ void Player::MoveAction()
 Player::Player()
 {
 	attackSpeed = 0.2;
+	nowEnergy = 10;
 	power = 1;
 
 	playerMoveTexture = Director::getInstance()->getTextureCache()->addImage("player/move/move.png");

@@ -45,34 +45,32 @@ bool HelloWorld::init()
 
 
 	// 조이스틱 1
-	kCenter1 = Vec2(JOYSTICK_RADIUS + JOYSTICK_OFFSET_X,
-		JOYSTICK_RADIUS + JOYSTICK_OFFSET_Y);
+	kCenter1 = Vec2(150,150	);
 	
 	velocity1 = Vec2::ZERO;
 
 	Sprite* bg1 = Sprite::create("joystick_background.png");
 	bg1->setPosition(kCenter1);
-	this->addChild(bg1, 0);
+	this->addChild(bg1, 1);
 
 	thumb1 = Sprite::create("joystick_thumb.png");
 	thumb1->setPosition(kCenter1);
-	this->addChild(thumb1, 1);
+	this->addChild(thumb1, 2);
 
 
 	// 조이스틱 2
-	kCenter2 = Vec2(JOYSTICK_RADIUS + winsize.width - 140,
-		JOYSTICK_RADIUS + JOYSTICK_OFFSET_Y);
+	kCenter2 = Vec2(winsize.width - 150, 150);
 
 
 	velocity2 = Vec2::ZERO;
 
 	Sprite* bg2 = Sprite::create("joystick_background.png");
 	bg2->setPosition(kCenter2);
-	this->addChild(bg2, 0);
+	this->addChild(bg2, 1);
 
 	thumb2 = Sprite::create("joystick_thumb.png");
 	thumb2->setPosition(kCenter2);
-	this->addChild(thumb2, 1);
+	this->addChild(thumb2, 2);
 
 
 
@@ -209,6 +207,7 @@ void HelloWorld::onTouchesBegan(const std::vector<Touch*>& touches, Event  *even
 		
 		Vec2 point = touch->getLocationInView();
 		Vec2 touchPoint = Director::getInstance()->convertToGL(point);
+
 
 		if (isPointInCircle(touchPoint, kCenter1, JOYSTICK_RADIUS) )
 		{

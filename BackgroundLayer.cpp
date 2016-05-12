@@ -50,7 +50,7 @@ bool BackgroundLayer::init()
 	this->createMonster(monster1);
 	this->createMonster(monster2);
 
-	this->createBackground();   //배경 이미지 생성
+	//this->createBackground();   //배경 이미지 생성
 	this->runAction(Follow::create(player, Rect(0, 0, 1500, 720)));  //카메라 이동
 
 
@@ -187,7 +187,7 @@ void BackgroundLayer::createMonster(Sprite * monster)
 	//playerBody->SetGravityScale(0);
 
 	b2PolygonShape monsterPolygon;
-	monsterPolygon.SetAsBox((monster->getContentSize().width / 3) / PTM_RATIO, (monster->getContentSize().height / 2) / PTM_RATIO);
+	monsterPolygon.SetAsBox((monster->getContentSize().width / 3) / PTM_RATIO, (monster->getContentSize().height / 3) / PTM_RATIO);
 	//log(" %f ", (monster->getContentSize().height / 2.5));
 
 	b2FixtureDef monsterFixtureDef;
