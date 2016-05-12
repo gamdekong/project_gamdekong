@@ -15,5 +15,6 @@ public:
 	CREATE_FUNC(Intro);
 
 	void doParticles();
+	void doStar();
 	void tick(float);
 };

@@ -29,13 +29,23 @@ bool Intro::init()
 	auto winsize = Director::getInstance()->getWinSize();
 
 	auto bg = Sprite::create("intro/background-star.png");
-	auto gameName = Sprite::create("intro/game_name.png");
-	bg->setAnchorPoint(Vec2(0, 0));
-	
-	gameName->setPosition(Vec2(winsize.width / 2, 500));
+	auto gameName = Sprite::create("intro/title.png");
+	bg->setPosition(Vec2(winsize.width/2 , winsize.height/2));
+	gameName->setPosition(Vec2(winsize.width / 2, winsize.height/2 + 150));
+	auto orora = Sprite::create("intro/orora.png");
+	//orora->setScale(0.5);
+	orora->setPosition(Vec2(winsize.width / 2, winsize.height / 2));
 
+	auto click = Sprite::create("intro/click.png");
+	click->setPosition(Vec2(winsize.width / 2, 100));
+	
+	//this->addChild(orora, 1);
+	this->addChild(click, 10);
 	this->addChild(bg,0);
 	this->addChild(gameName, 10);
+
+
+	
 
 	this->schedule(schedule_selector(Intro::tick, this));
 
@@ -50,7 +60,7 @@ void Intro::doParticles()
 	int x = rand() % 1200 - 200 ;
 	int y = rand() % 700 + 300;
 	int type = rand() % 2 + 1;
-	int speed = rand() % 4 +1;
+	int speed = rand() % 8 +4;
 	float size = (float)(rand() % 3+1 ) / 10;
 	//ParticleSystem* particleTest = ParticleFire::create();
 	ParticleSystem* particleTest1 = ParticleSun::create();
@@ -77,10 +87,10 @@ void Intro::doParticles()
 
 			//파티클의 위치 조정
 			particleTest1->setPosition(Vec2(x, y));
-			auto move = MoveBy::create(speed, Vec2(800, -1500));
+			auto move = MoveBy::create(speed, Vec2(1300, -2000));
 			auto seq = Sequence::create(move, RemoveSelf::create(), nullptr);
 			particleTest1->runAction(seq);
-			this->addChild(particleTest1);
+			this->addChild(particleTest1,3);
 
 		}
 		
@@ -99,10 +109,10 @@ void Intro::doParticles()
 
 			//파티클의 위치 조정
 			particleTest2->setPosition(Vec2(x, y));
-			auto move = MoveBy::create(speed, Vec2(800, -1500));
+			auto move = MoveBy::create(speed, Vec2(1300, -2000));
 			auto seq = Sequence::create(move, RemoveSelf::create(), nullptr);
 			particleTest2->runAction(seq);
-			this->addChild(particleTest2);
+			this->addChild(particleTest2,3);
 
 		}
 	}
@@ -110,12 +120,43 @@ void Intro::doParticles()
 
 }
 
+void Intro::doStar()
+{
+	int x = rand() % 1280 + 1;
+	int y = rand() % 720 + 1;
+	float size = (float)(rand() % 3 + 2) / 10;
+
+	auto star = Sprite::create("images/stars.png");
+	star->setPosition(Vec2(x, y));
+	star->setOpacity(0);
+	star->setScale(size);
+	this->addChild(star,3);
+
+	auto starFadein = FadeIn::create(1);
+	auto starFadeout = FadeOut::create(1);
+	auto rotate = RotateBy::create(2, 360);
+	auto fade = Sequence::create(starFadein,starFadeout, nullptr);
+	
+	auto spawnAction = Spawn::create(fade, rotate, nullptr);
+	auto seq = Sequence::create(spawnAction, RemoveSelf::create(), nullptr);
+	
+	star->runAction(seq);
+}
+
 void Intro::tick(float)
 {
+	
+
+
 	int time = rand() % 100 + 1;
-	if (time >40 && time < 50 )
+	if (time < 3)
 	{
 		this->doParticles();
 	}
+	if (time > 80)
+	{
+		this->doStar();
+	}
+
 	
 }
