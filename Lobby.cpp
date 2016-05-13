@@ -1,12 +1,12 @@
-#include "BackgroundLayer.h"
+#include "Lobby.h"
 
 USING_NS_CC;
 
-Scene* BackgroundLayer::createScene()
+Scene* Lobby::createScene()
 {
 
 	auto scene = Scene::create();
-	auto layer = BackgroundLayer::create();
+	auto layer = Lobby::create();
 	scene->addChild(layer);
 
 
@@ -14,7 +14,7 @@ Scene* BackgroundLayer::createScene()
 }
 
 // on "init" you need to initialize your instance
-bool BackgroundLayer::init()
+bool Lobby::init()
 {
 	//////////////////////////////
 	// 1. super init first
@@ -24,43 +24,25 @@ bool BackgroundLayer::init()
 	}
 	missileBodyVector.clear();
 	monsterBodyVector.clear();
-
+	winSize = Director::getInstance()->getWinSize();
 
 	player = new Player();
 	this->addChild(player, 1);
 
-	
-	auto monster1 = new Monster(1);
-	monster1->setPosition(Vec2(500, 200));
-	this->addChild(monster1, 1);
-	auto monster2 = new Monster(2);
-	monster2->setPosition(Vec2(800, 300));
-	this->addChild(monster2, 1);
-	auto monster3 = new Monster(3);
-	monster3->setPosition(Vec2(1000, 300));
-	this->addChild(monster3, 1);
-	auto monster4 = new Monster(4);
-	monster4->setPosition(Vec2(500, 400));
-	this->addChild(monster4, 1);
-	auto monster5 = new Monster(5);
-	monster5->setPosition(Vec2(900, 300));
-	this->addChild(monster5, 1);
-	
-	
+
+
+	// 월드 생성
+
 	if (this->createWorld(true))
 	{
-		this->schedule(schedule_selector(BackgroundLayer::tick));
+		this->schedule(schedule_selector(Lobby::tick));
 		myContactListener = new ContactListener(player);
 
 		_world->SetContactListener((b2ContactListener*)myContactListener);
 	}
 
 	this->createPlayer(player);  //바디 생성
-	this->createMonster(monster1);
-	this->createMonster(monster2);
-	this->createMonster(monster3);
-	this->createMonster(monster4);
-	this->createMonster(monster5);
+	
 
 	this->createBackground();   //배경 이미지 생성
 	this->runAction(Follow::create(player, Rect(0, 0, 1500, 720)));  //카메라 이동
@@ -69,7 +51,7 @@ bool BackgroundLayer::init()
 	return true;
 }
 
-bool BackgroundLayer::createWorld(bool debug)
+bool Lobby::createWorld(bool debug)
 {
 	//월드 생성 시작
 
@@ -134,8 +116,11 @@ bool BackgroundLayer::createWorld(bool debug)
 	groundEdge.Set(b2Vec2(0, 100 / PTM_RATIO), b2Vec2(1500 / PTM_RATIO, 100 / PTM_RATIO));
 	groundBody->CreateFixture(&boxShapeDef);
 
-	//위쪽
-	groundEdge.Set(b2Vec2(200 / PTM_RATIO, 540 / PTM_RATIO), b2Vec2(1300 / PTM_RATIO, 540 / PTM_RATIO));
+	//위쪽1
+	groundEdge.Set(b2Vec2(200 / PTM_RATIO, 540 / PTM_RATIO), b2Vec2(1000 / PTM_RATIO, 540 / PTM_RATIO));
+	groundBody->CreateFixture(&boxShapeDef);
+	//위쪽2
+	groundEdge.Set(b2Vec2(1100 / PTM_RATIO, 540 / PTM_RATIO), b2Vec2(1300 / PTM_RATIO, 540 / PTM_RATIO));
 	groundBody->CreateFixture(&boxShapeDef);
 
 	//오른쪽 기운쪽
@@ -148,117 +133,13 @@ bool BackgroundLayer::createWorld(bool debug)
 
 	//월드 생성 끝-----------------------
 
-	
+
 
 	return true;
 }
 
-void BackgroundLayer::createPlayer(Sprite * player)
-{
-	
-	//--------------플레이어 바디생성
-	b2BodyDef playerBodyDef;
-	playerBodyDef.type = b2_dynamicBody;
-	playerBodyDef.position.Set(player->getPosition().x / PTM_RATIO, player->getPosition().y / PTM_RATIO);
-	playerBodyDef.linearDamping = 20;
-	playerBodyDef.userData = player;
 
-
-	playerBody = _world->CreateBody(&playerBodyDef);
-
-	//playerBody->SetMassData(mass);
-	//playerBody->SetGravityScale(0);
-
-	b2PolygonShape playerPolygon;
-	playerPolygon.SetAsBox((player->getContentSize().width /6) / PTM_RATIO, (player->getContentSize().height / 2) / PTM_RATIO);
-	log(" %f ", (player->getContentSize().height / 2.5));
-
-	b2FixtureDef playerFixtureDef;
-	playerFixtureDef.shape = &playerPolygon;
-	playerFixtureDef.density = 0.0f;
-	playerFixtureDef.filter.groupIndex = GROUP_INDEX_PLAYER;
-	playerFixtureDef.filter.categoryBits = CATEGORY_PLAYER;
-	playerFixtureDef.filter.maskBits = CATEGORY_MONSTER;
-	playerBody->CreateFixture(&playerFixtureDef);
-
-}
-
-void BackgroundLayer::createMonster(Sprite * monster)
-{
-	//--------------플레이어 바디생성
-	b2BodyDef monsterBodyDef;
-	monsterBodyDef.type = b2_dynamicBody;
-	monsterBodyDef.position.Set(monster->getPosition().x / PTM_RATIO, monster->getPosition().y / PTM_RATIO);
-	monsterBodyDef.linearDamping = 20;
-	monsterBodyDef.userData = monster;
-
-
-	auto monsterBody = _world->CreateBody(&monsterBodyDef);
-
-	//playerBody->SetMassData(mass);
-	//playerBody->SetGravityScale(0);
-
-	b2PolygonShape monsterPolygon;
-	monsterPolygon.SetAsBox((monster->getContentSize().width / 3) / PTM_RATIO, (monster->getContentSize().height / 3) / PTM_RATIO);
-	//log(" %f ", (monster->getContentSize().height / 2.5));
-
-	b2FixtureDef monsterFixtureDef;
-	monsterFixtureDef.shape = &monsterPolygon;
-	monsterFixtureDef.density = 0.0f;
-	monsterFixtureDef.filter.groupIndex = GROUP_INDEX_MONSTER;
-	monsterFixtureDef.filter.categoryBits = CATEGORY_MONSTER;
-	monsterFixtureDef.filter.maskBits = CATEGORY_PLAYER;
-
-	monsterBody->CreateFixture(&monsterFixtureDef);
-	monsterBodyVector.push_back(monsterBody);
-	auto mon = (Monster*)monster;
-	mon->IdleAction();
-}
-
-void BackgroundLayer::createBackground()
-{
-	auto bg = Sprite::create("stage/stage-1.png");
-	bg->setAnchorPoint(Vec2(0, 0));
-	bg->setPosition(Vec2(0, 100));
-	this->addChild(bg,0);
-}
-
-
-BackgroundLayer::~BackgroundLayer()
-{
-	delete _world;
-	_world = nullptr;
-
-}
-
-
-void BackgroundLayer::onEnter()
-{
-	Layer::onEnter();
-
-}
-
-void BackgroundLayer::onExit()
-{
-	_eventDispatcher->removeAllEventListeners();
-	Layer::onExit();
-}
-
-
-void BackgroundLayer::draw(Renderer * renderer, const Mat4 & transform, uint32_t flags)
-{
-	//Layer::draw();
-	Layer::draw(renderer, transform, flags);
-GL:ccGLEnableVertexAttribs(GL::VERTEX_ATTRIB_FLAG_POSITION);
-
-	kmGLPushMatrix();
-	_world->DrawDebugData();
-	kmGLPopMatrix();
-
-
-}
-
-void BackgroundLayer::tick(float dt)
+void Lobby::tick(float dt)
 {
 	//물리적 위치를 이용해 그래픽 위치는 갱신한다.
 
@@ -286,36 +167,24 @@ void BackgroundLayer::tick(float dt)
 
 			if (b->GetUserData() == player)
 			{
-				float vx = joystickVelocity1->x* 5;//스피드
+				float vx = joystickVelocity1->x * 5;//스피드
 				float vy = joystickVelocity1->y * 5;
 				//set ball velocity by Joystick
 				b->SetLinearVelocity(b2Vec2(vx, vy) + (b->GetLinearVelocity()));
 
 			}
-			
+
 
 		}
-		
+
 
 	}
 
-	//for (vector<b2Body*>::iterator it = missileBodyVector.begin(); it != missileBodyVector.end(); it++)
-	//{
-	//	if ((*it)->GetUserData() == nullptr)
-	//	{
-	//		
-	//		it
-	//		//missileBodyVector.erase(it);
-	//		_world->DestroyBody((*it));
-
-	//	}
-
-	//}
 
 	//미사일 바디 삭제와 벡터에서의 바디 삭제
 	for (int i = 0; i < missileBodyVector.size(); i++)
 	{
-	
+
 		if (missileBodyVector[i]->GetUserData() == nullptr)
 		{
 			_world->DestroyBody(missileBodyVector[i]);
@@ -324,99 +193,30 @@ void BackgroundLayer::tick(float dt)
 		}
 		//if (missileBodyVector.size() > 0)
 
-			//log("%d", missileBodyVector.size());
+		//log("%d", missileBodyVector.size());
 
 	}
 
 
-	//////////////////////////////////////////////////////////////////// 몬스터 바디 삭제로 인해 에러 발생
 
-
-	for (int i = 0; i < monsterBodyVector.size(); i++)
-	{
-
-		if (monsterBodyVector[i]->GetUserData() == nullptr)
-		{
-			log("1%d", monsterBodyVector.size());
-
-			_world->DestroyBody(monsterBodyVector[i]);
-			log("2%d", monsterBodyVector.size());
-
-			monsterBodyVector.erase(monsterBodyVector.begin() + i);
-		}
-
-	}
-	for (int i = 0; i < monsterBodyVector.size(); i++)
-	{
-
-		Monster *monster = (Monster*)(monsterBodyVector[i]->GetUserData());
-
-		//  충돌 처리
-		if (player->getPosition().y < monster->getPosition().y + 30 && player->getPosition().y > monster->getPosition().y -30)
-		{
-			//log("dddd");
-			auto newFilter = new b2Filter();
-			auto oldFilter = new b2Filter();
-			*oldFilter = monsterBodyVector[i]->GetFixtureList()->GetFilterData();
-			newFilter = oldFilter;
-			newFilter->maskBits = CATEGORY_PLAYER;
-			monsterBodyVector[i]->GetFixtureList()->SetFilterData(*newFilter);
-		}
-		else
-		{
-			auto newFilter = new b2Filter();
-			auto oldFilter = new b2Filter();
-			*oldFilter = monsterBodyVector[i]->GetFixtureList()->GetFilterData();
-			newFilter = oldFilter;
-			newFilter->maskBits = 200;
-			monsterBodyVector[i]->GetFixtureList()->SetFilterData(*newFilter);
-
-		}
-
-		// ZOrder 처리
-		if (player->getPosition().y > monster->getPosition().y + 30)
-			player->setZOrder(monster->getZOrder() - 1);
-		else if (player->getPosition().y < monster->getPosition().y + 30)
-			player->setZOrder(monster->getZOrder() + 1);
-
-
-
-	}
-
-
-	// 캐릭터 공격 관련 부분
-	/*if (!joystickIspressed2 && joystick2->attack != 0)
-	{
-		if (joystick2->attack == SHORT_ATTACK)
-		{
-			player->stopAllActions();
-			player->AttackAction();
-			joystick2->attack = 0;
-
-		}
-		
-	
-	}*/
-
-
-	if (joystickVelocity2->x > 0.9  )
+	if (joystickVelocity2->x > 0.9)
 	{
 		LongAttack(RIGHTLONGATTACK);
-		
+
 	}
 	else if (joystickVelocity2->x < -0.9)
 	{
 		LongAttack(LEFTLONGATTACK);
 	}
-				
 
-	
+
+
 
 
 	// 캐릭터 이동 관련 부분
 	if (joystickVelocity1->x == 0 && joystickVelocity1->y == 0 && count == 0)
 	{
-		
+
 		player->stopAllActions();
 		player->IdleAction();
 		count = 1;
@@ -447,37 +247,111 @@ void BackgroundLayer::tick(float dt)
 
 	}
 
+
+	if (player->getPosition().x > 1000 && player->getPosition().x < 1100 && player->getPosition().y > 500 && tCount == 0)
+	{
+		tCount++;
+		auto pScene = HelloWorld::createScene();
+	
+		Director::getInstance()->replaceScene(TransitionFade::create(0.5, pScene));
+	}
+
 }
 
-void BackgroundLayer::LongAttack(int num)
+
+void Lobby::createBackground()
+{
+	auto bg2 = Sprite::create("lobby/lobbyBg.png");
+	bg2->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
+	this->addChild(bg2,0);
+
+	auto bg = Sprite::create("stage/lobby.png");
+	bg->setAnchorPoint(Vec2(0, 0));
+	bg->setPosition(Vec2(0, 100));
+	this->addChild(bg, 0);
+
+	auto door = Sprite::create("structure/door2.png");
+	door->setAnchorPoint(Vec2(0, 0));
+	door->setPosition(Vec2(965, 400));
+	this->addChild(door,0);
+
+	
+}
+
+
+void Lobby::draw(Renderer * renderer, const Mat4 & transform, uint32_t flags)
+{
+	//Layer::draw();
+	Layer::draw(renderer, transform, flags);
+	GL:ccGLEnableVertexAttribs(GL::VERTEX_ATTRIB_FLAG_POSITION);
+
+	kmGLPushMatrix();
+	_world->DrawDebugData();
+	kmGLPopMatrix();
+
+
+}
+
+void Lobby::createPlayer(Sprite * player)
+{
+
+	//--------------플레이어 바디생성
+	b2BodyDef playerBodyDef;
+	playerBodyDef.type = b2_dynamicBody;
+	playerBodyDef.position.Set(player->getPosition().x / PTM_RATIO, player->getPosition().y / PTM_RATIO);
+	playerBodyDef.linearDamping = 20;
+	playerBodyDef.userData = player;
+
+
+	playerBody = _world->CreateBody(&playerBodyDef);
+
+	//playerBody->SetMassData(mass);
+	//playerBody->SetGravityScale(0);
+
+	b2PolygonShape playerPolygon;
+	playerPolygon.SetAsBox((player->getContentSize().width / 6) / PTM_RATIO, (player->getContentSize().height / 2) / PTM_RATIO);
+	log(" %f ", (player->getContentSize().height / 2.5));
+
+	b2FixtureDef playerFixtureDef;
+	playerFixtureDef.shape = &playerPolygon;
+	playerFixtureDef.density = 0.0f;
+	playerFixtureDef.filter.groupIndex = GROUP_INDEX_PLAYER;
+	playerFixtureDef.filter.categoryBits = CATEGORY_PLAYER;
+	playerFixtureDef.filter.maskBits = CATEGORY_MONSTER;
+	playerBody->CreateFixture(&playerFixtureDef);
+
+}
+
+
+void Lobby::LongAttack(int num)
 {
 	switch (num)
 	{
 	case RIGHTLONGATTACK:
-	
-		if (!this->isScheduled(schedule_selector(BackgroundLayer::RightLongAttack)) &&
-			!this->isScheduled(schedule_selector(BackgroundLayer::clearTime)))
+
+		if (!this->isScheduled(schedule_selector(Lobby::RightLongAttack)) &&
+			!this->isScheduled(schedule_selector(Lobby::clearTime)))
 		{
 			this->RightLongAttack(0);
 		}
-		else if (!this->isScheduled(schedule_selector(BackgroundLayer::RightLongAttack)))
-			this->scheduleOnce(schedule_selector(BackgroundLayer::RightLongAttack), player->attackSpeed);
+		else if (!this->isScheduled(schedule_selector(Lobby::RightLongAttack)))
+			this->scheduleOnce(schedule_selector(Lobby::RightLongAttack), player->attackSpeed);
 		break;
 
 
 	case LEFTLONGATTACK:
-		if (!this->isScheduled(schedule_selector(BackgroundLayer::LeftLongAttack)) &&
-			!this->isScheduled(schedule_selector(BackgroundLayer::clearTime)))
+		if (!this->isScheduled(schedule_selector(Lobby::LeftLongAttack)) &&
+			!this->isScheduled(schedule_selector(Lobby::clearTime)))
 		{
 			this->LeftLongAttack(0);
 		}
-		else if (!this->isScheduled(schedule_selector(BackgroundLayer::LeftLongAttack)))
-			this->scheduleOnce(schedule_selector(BackgroundLayer::LeftLongAttack), player->attackSpeed);
+		else if (!this->isScheduled(schedule_selector(Lobby::LeftLongAttack)))
+			this->scheduleOnce(schedule_selector(Lobby::LeftLongAttack), player->attackSpeed);
 		break;
 	}
 }
 
-void BackgroundLayer::RightLongAttack(float dt)
+void Lobby::RightLongAttack(float dt)
 {
 	log("오른쪽 검기");
 
@@ -492,13 +366,13 @@ void BackgroundLayer::RightLongAttack(float dt)
 	missile->startAction(missile->missileNum);
 	//auto move = MoveBy::create(1.75f, Vec2(1500, 0));
 	//missile->runAction(move);
-	
+
 	b2BodyDef missileBodyDef;
 	missileBodyDef.type = b2_dynamicBody;
 	missileBodyDef.position.Set((missile->getPosition().x) / PTM_RATIO, missile->getPosition().y / PTM_RATIO);
 	missileBodyDef.linearDamping = 0;
 	missileBodyDef.userData = missile;
-	
+
 	auto missileBody = _world->CreateBody(&missileBodyDef);
 	//playerBody->SetMassData(mass);
 	//playerBody->SetGravityScale(0);
@@ -516,10 +390,10 @@ void BackgroundLayer::RightLongAttack(float dt)
 	missileBody->SetLinearVelocity(b2Vec2(10, 0));
 	missileBodyVector.push_back(missileBody);
 	//joystick2->attack = 0;
-	this->scheduleOnce(schedule_selector(BackgroundLayer::clearTime), player->attackSpeed);
+	this->scheduleOnce(schedule_selector(Lobby::clearTime), player->attackSpeed);
 
 }
-void BackgroundLayer::LeftLongAttack(float dt)
+void Lobby::LeftLongAttack(float dt)
 {
 	log("왼쪽 검기");
 
@@ -531,7 +405,7 @@ void BackgroundLayer::LeftLongAttack(float dt)
 	missile->setAnchorPoint(Vec2(0.2, 0.5));
 	player->AttackAction();
 	missile->startAction(missile->missileNum);
-	
+
 
 	//auto move = MoveBy::create(1.75f, Vec2(1500, 0));
 	//missile->runAction(move);
@@ -559,11 +433,11 @@ void BackgroundLayer::LeftLongAttack(float dt)
 	missileBody->SetLinearVelocity(b2Vec2(-10, 0));
 	missileBodyVector.push_back(missileBody);
 	//joystick2->attack = 0;
-	this->scheduleOnce(schedule_selector(BackgroundLayer::clearTime), player->attackSpeed);
+	this->scheduleOnce(schedule_selector(Lobby::clearTime), player->attackSpeed);
 
 }
 
-void BackgroundLayer::clearTime(float)
+void Lobby::clearTime(float)
 {
 }
 

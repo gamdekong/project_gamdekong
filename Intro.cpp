@@ -32,24 +32,54 @@ bool Intro::init()
 	auto gameName = Sprite::create("intro/title.png");
 	bg->setPosition(Vec2(winsize.width/2 , winsize.height/2));
 	gameName->setPosition(Vec2(winsize.width / 2, winsize.height/2 + 150));
-	auto orora = Sprite::create("intro/orora.png");
-	//orora->setScale(0.5);
-	orora->setPosition(Vec2(winsize.width / 2, winsize.height / 2));
+
+	auto bg2 = Sprite::create("intro/bg2.png");
+	bg2->setAnchorPoint(Vec2(0, 0));
+	bg2->setPosition(Vec2(0, 0));
+	
+	
+	auto orora = Sprite::create("intro/orora2.png");
+	orora->setPosition(Vec2(winsize.width/2 , winsize.height / 2));
+	orora->setOpacity(0);
+
+	auto orora2 = Sprite::create("intro/orora.png");
+	orora2->setPosition(Vec2(winsize.width / 2, winsize.height / 2));
+	orora2->setOpacity(0);
 
 	auto click = Sprite::create("intro/click.png");
 	click->setPosition(Vec2(winsize.width / 2, 100));
 	
-	//this->addChild(orora, 1);
+	this->addChild(orora, 1);
+	this->addChild(orora2, 1);
 	this->addChild(click, 10);
 	this->addChild(bg,0);
+	this->addChild(bg2, 4);
 	this->addChild(gameName, 10);
 
 
 	
 
 	this->schedule(schedule_selector(Intro::tick, this));
-
 	
+	/*auto fi = FadeIn::create(5);
+	auto fo = FadeOut::create(5);
+	auto move1 = MoveBy::create(20,(Vec2(100, 0)));
+	auto seq = Sequence::create(fi, fo, nullptr);
+	auto spawn1 = Spawn::create(seq, move1, nullptr);
+	auto r1 = RepeatForever::create(spawn1);
+
+
+	auto fi1 = FadeIn::create(3);
+	auto fo1 = FadeOut::create(3);
+	auto move2 = MoveBy::create(20, (Vec2(-100, 0)));
+	auto seq2 = Sequence::create(fi1, fo1, nullptr);
+	auto spawn2 = Spawn::create(seq2, move2, nullptr);
+	auto r2 = RepeatForever::create(spawn2);
+
+
+	orora->runAction(r1);
+	orora2->runAction(r2);*/
+	//orora2->runAction(moveRight);
 
 	return true;
 }
@@ -90,7 +120,7 @@ void Intro::doParticles()
 			auto move = MoveBy::create(speed, Vec2(1300, -2000));
 			auto seq = Sequence::create(move, RemoveSelf::create(), nullptr);
 			particleTest1->runAction(seq);
-			this->addChild(particleTest1,3);
+			this->addChild(particleTest1,5);
 
 		}
 		
@@ -112,7 +142,7 @@ void Intro::doParticles()
 			auto move = MoveBy::create(speed, Vec2(1300, -2000));
 			auto seq = Sequence::create(move, RemoveSelf::create(), nullptr);
 			particleTest2->runAction(seq);
-			this->addChild(particleTest2,3);
+			this->addChild(particleTest2,5);
 
 		}
 	}
@@ -159,4 +189,41 @@ void Intro::tick(float)
 	}
 
 	
+}
+
+
+void Intro::onEnter()
+{
+	Layer::onEnter();
+
+	auto listener = EventListenerTouchAllAtOnce::create();
+	listener->onTouchesBegan = CC_CALLBACK_2(Intro::onTouchesBegan, this);
+	listener->onTouchesMoved = CC_CALLBACK_2(Intro::onTouchesMoved, this);
+	listener->onTouchesEnded = CC_CALLBACK_2(Intro::onTouchesEnded, this);
+	
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+}
+
+void Intro::onTouchesBegan(const std::vector<Touch*>& touches, Event  *event)
+{
+
+
+}
+
+void Intro::onTouchesMoved(const std::vector<Touch*>& touches, Event  *event)
+{
+	
+
+
+
+	
+
+}
+
+void Intro::onTouchesEnded(const std::vector<Touch*>& touches, Event  *event)
+{
+	auto pScene = LobbyLayer::createScene();
+
+	Director::getInstance()->replaceScene(TransitionFade::create(0.5, pScene));
+
 }
