@@ -43,6 +43,7 @@ public:
 	//bool onTouchBegan(Touch *touch, Event *event);
 	bool createWorld(bool);
 	void createPlayer(Sprite *player);
+	void createMonster(Sprite *monster);
 	
 	void createBackground();
 	

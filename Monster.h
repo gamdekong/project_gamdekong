@@ -11,6 +11,9 @@ using namespace cocos2d;
 #define SOUL 6
 #define SWORND 7
 #define WORM 8
+#define FIREGIRL 9
+#define BALCKSMITH 10
+#define FIRE 11
 
 class Monster : public cocos2d::Sprite
 {
@@ -26,14 +29,7 @@ public:
 	int nowEnergy;
 	int monsterNum;
 	Texture2D *monster;
-	Texture2D *beast;
-	Texture2D *bird;
-	Texture2D *dog;
-	Texture2D *bat;
-	Texture2D *snake;
-	Texture2D *soul;
-	Texture2D *swornd;
-	Texture2D *worm;
+	
 
 	void IdleAction();
 	void AttackAction();

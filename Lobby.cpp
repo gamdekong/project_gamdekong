@@ -28,6 +28,16 @@ bool Lobby::init()
 
 	player = new Player();
 	this->addChild(player, 1);
+	
+	
+	auto firegirl = new Monster(9);
+	firegirl->setPosition(Vec2(450, 400));
+	firegirl->setFlippedX(true);
+	this->addChild(firegirl,1);
+
+	auto fire = new Monster(11);
+	fire->setPosition(Vec2(400, 370));
+	this->addChild(fire, 1);
 
 
 
@@ -42,6 +52,8 @@ bool Lobby::init()
 	}
 
 	this->createPlayer(player);  //바디 생성
+	this->createMonster(firegirl);
+	this->createMonster(fire);
 	
 
 	this->createBackground();   //배경 이미지 생성
@@ -248,13 +260,60 @@ void Lobby::tick(float dt)
 	}
 
 
+	for (int i = 0; i < monsterBodyVector.size(); i++)
+	{
+
+		Monster *monster = (Monster*)(monsterBodyVector[i]->GetUserData());
+
+		//  충돌 처리
+		if (player->getPosition().y < monster->getPosition().y + 30 && player->getPosition().y > monster->getPosition().y - 30)
+		{
+			//log("dddd");
+			auto newFilter = new b2Filter();
+			auto oldFilter = new b2Filter();
+			*oldFilter = monsterBodyVector[i]->GetFixtureList()->GetFilterData();
+			newFilter = oldFilter;
+			newFilter->maskBits = CATEGORY_PLAYER;
+			monsterBodyVector[i]->GetFixtureList()->SetFilterData(*newFilter);
+		}
+		else
+		{
+			auto newFilter = new b2Filter();
+			auto oldFilter = new b2Filter();
+			*oldFilter = monsterBodyVector[i]->GetFixtureList()->GetFilterData();
+			newFilter = oldFilter;
+			newFilter->maskBits = 200;
+			monsterBodyVector[i]->GetFixtureList()->SetFilterData(*newFilter);
+
+		}
+
+		// ZOrder 처리
+		if (player->getPosition().y > monster->getPosition().y + 30)
+			player->setZOrder(monster->getZOrder() - 1);
+		else if (player->getPosition().y < monster->getPosition().y + 30)
+			player->setZOrder(monster->getZOrder() + 1);
+
+
+
+	}
+
+
+
+
+
+
+
 	if (player->getPosition().x > 1000 && player->getPosition().x < 1100 && player->getPosition().y > 500 && tCount == 0)
 	{
 		tCount++;
 		auto pScene = HelloWorld::createScene();
 	
-		Director::getInstance()->replaceScene(TransitionFade::create(0.5, pScene));
+		Director::getInstance()->replaceScene(TransitionFade::create(0.1, pScene));
 	}
+
+
+
+
 
 }
 
@@ -262,7 +321,8 @@ void Lobby::tick(float dt)
 void Lobby::createBackground()
 {
 	auto bg2 = Sprite::create("lobby/lobbyBg.png");
-	bg2->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
+	bg2->setPosition(Vec2(0, 400));
+	bg2->setAnchorPoint(Vec2(0, 0));
 	this->addChild(bg2,0);
 
 	auto bg = Sprite::create("stage/lobby.png");
@@ -274,6 +334,10 @@ void Lobby::createBackground()
 	door->setAnchorPoint(Vec2(0, 0));
 	door->setPosition(Vec2(965, 400));
 	this->addChild(door,0);
+
+	auto fireborn = Sprite::create("lobby/fireborn.png");
+	fireborn->setPosition(Vec2(400, 330));
+	this->addChild(fireborn, 0);
 
 	
 }
@@ -322,6 +386,37 @@ void Lobby::createPlayer(Sprite * player)
 
 }
 
+void Lobby::createMonster(Sprite * monster)
+{
+	//--------------플레이어 바디생성
+	b2BodyDef monsterBodyDef;
+	monsterBodyDef.type = b2_kinematicBody;
+	monsterBodyDef.position.Set(monster->getPosition().x / PTM_RATIO, monster->getPosition().y / PTM_RATIO);
+	monsterBodyDef.linearDamping = 20;
+	monsterBodyDef.userData = monster;
+
+
+	auto monsterBody = _world->CreateBody(&monsterBodyDef);
+
+	//playerBody->SetMassData(mass);
+	//playerBody->SetGravityScale(0);
+
+	b2PolygonShape monsterPolygon;
+	monsterPolygon.SetAsBox((monster->getContentSize().width / 3) / PTM_RATIO, (monster->getContentSize().height /2 ) / PTM_RATIO);
+	//log(" %f ", (monster->getContentSize().height / 2.5));
+
+	b2FixtureDef monsterFixtureDef;
+	monsterFixtureDef.shape = &monsterPolygon;
+	monsterFixtureDef.density = 0.0f;
+	monsterFixtureDef.filter.groupIndex = GROUP_INDEX_MONSTER;
+	monsterFixtureDef.filter.categoryBits = CATEGORY_MONSTER;
+	monsterFixtureDef.filter.maskBits = CATEGORY_PLAYER;
+
+	monsterBody->CreateFixture(&monsterFixtureDef);
+	monsterBodyVector.push_back(monsterBody);
+	auto mon = (Monster*)monster;
+	mon->IdleAction();
+}
 
 void Lobby::LongAttack(int num)
 {

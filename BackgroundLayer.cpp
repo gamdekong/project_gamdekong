@@ -43,7 +43,7 @@ bool BackgroundLayer::init()
 	monster4->setPosition(Vec2(500, 400));
 	this->addChild(monster4, 1);
 	auto monster5 = new Monster(5);
-	monster5->setPosition(Vec2(900, 300));
+	monster5->setPosition(Vec2(1400, 300));
 	this->addChild(monster5, 1);
 	
 	
@@ -329,7 +329,6 @@ void BackgroundLayer::tick(float dt)
 	}
 
 
-	//////////////////////////////////////////////////////////////////// 몬스터 바디 삭제로 인해 에러 발생
 
 
 	for (int i = 0; i < monsterBodyVector.size(); i++)

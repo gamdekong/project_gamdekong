@@ -41,6 +41,16 @@ Monster::Monster(int num)
 		nowEnergy = 10;
 		power = 2;
 	}
+	else if (monsterNum == FIREGIRL)
+	{
+		nowEnergy = 1000;
+		power = 0;
+	}
+	else if (monsterNum == FIRE)
+	{
+		nowEnergy = 1000;
+		power = 0;
+	}
 
 
 	this->init2();
@@ -84,7 +94,14 @@ void Monster::init2()
 		monster = Director::getInstance()->getTextureCache()->addImage("monster/stage1-monster/worm.png");
 		this->initWithTexture(monster, Rect(0, 0, 120, 120));
 		break;
-
+	case FIREGIRL:
+		monster = Director::getInstance()->getTextureCache()->addImage("monster/npc/firegirl.png");
+		this->initWithTexture(monster, Rect(0, 0, 75, 200));
+		break;
+	case FIRE:
+		monster = Director::getInstance()->getTextureCache()->addImage("monster/npc/fire.png");
+		this->initWithTexture(monster, Rect(0, 0, 71, 100));
+		break;
 
 	}
 	this->setTag(2);
@@ -162,6 +179,20 @@ void Monster::IdleAction()
 		animation->addSpriteFrameWithTexture(monster, Rect(360, 0, 120, 120));
 		animation->addSpriteFrameWithTexture(monster, Rect(480, 0, 120, 120));
 		break;
+	case FIREGIRL:
+		animation->addSpriteFrameWithTexture(monster, Rect(0, 0, 75, 200));
+		animation->addSpriteFrameWithTexture(monster, Rect(75, 0, 75, 200));
+		animation->addSpriteFrameWithTexture(monster, Rect(150, 0, 75, 200));
+		animation->addSpriteFrameWithTexture(monster, Rect(225, 0, 75, 200));
+		break;
+	case FIRE:
+		animation->addSpriteFrameWithTexture(monster, Rect(0, 0, 71, 100));
+		animation->addSpriteFrameWithTexture(monster, Rect(71, 0, 71, 100));
+		animation->addSpriteFrameWithTexture(monster, Rect(142, 0, 71, 100));
+		animation->addSpriteFrameWithTexture(monster, Rect(213, 0, 71, 100));
+		break;
+		
+
 	}
 	auto animate = Animate::create(animation);
 	auto seqFor = RepeatForever::create(animate);

@@ -30,7 +30,8 @@ bool Intro::init()
 
 	auto bg = Sprite::create("intro/background-star.png");
 	auto gameName = Sprite::create("intro/title.png");
-	bg->setPosition(Vec2(winsize.width/2 , winsize.height/2));
+	bg->setPosition(Vec2(0 , 0));
+	bg->setAnchorPoint(Vec2(0, 0));
 	gameName->setPosition(Vec2(winsize.width / 2, winsize.height/2 + 150));
 
 	auto bg2 = Sprite::create("intro/bg2.png");
