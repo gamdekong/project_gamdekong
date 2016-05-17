@@ -245,12 +245,12 @@ void Stage1_1::onEnter()
 	Layer::onEnter();
 
 }
-
-void Stage1_1::onExit()
-{
-	_eventDispatcher->removeAllEventListeners();
-	Layer::onExit();
-}
+//
+//void Stage1_1::onExit()
+//{
+//	_eventDispatcher->removeAllEventListeners();
+//	Layer::onExit();
+//}
 
 
 void Stage1_1::draw(Renderer * renderer, const Mat4 & transform, uint32_t flags)
@@ -453,6 +453,14 @@ void Stage1_1::tick(float dt)
 		player->setFlippedX(false);
 
 	}
+
+	//if (player->getPosition().x > 1000 && player->getPosition().x < 1100 && player->getPosition().y > 500 && tCount == 0)
+	//{
+	//	tCount++;
+	//	auto pScene = Stage1_2Layer::createScene();
+
+	//	Director::getInstance()->replaceScene(TransitionFade::create(0.1, pScene));
+	//}
 
 }
 

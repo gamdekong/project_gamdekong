@@ -1,19 +1,15 @@
-Ôªø#ifndef __Stage1_Layer_SCENE_H__
-#define __Stage1_Layer_SCENE_H__
-
+#pragma once
 #include "cocos2d.h"
 #include "Box2D/Box2D.h"
 #include "GLES-Render.h"
 #include "Player.h"
-#include "Stage1_1.h"
 #include "Stage1_2.h"
-
 
 #define JOYSTICK_OFFSET_X 5.0f
 #define JOYSTICK_OFFSET_Y 5.0f
 
 #define JOYSTICK_RADIUS 64.0f
-#define THUMB_RADIUS 40.0f  //Î†àÎ≤ÑÍ∞Ä ÏõÄÏßÅÏù¥Îäî Î≤îÏúÑ
+#define THUMB_RADIUS 40.0f  //∑ππˆ∞° øÚ¡˜¿Ã¥¬ π¸¿ß
 
 #define PTM_RATIO 32
 //#define SHORT_ATTACK 1
@@ -24,17 +20,17 @@ using namespace cocos2d;
 
 
 
-class Stage1_Layer : public cocos2d::Layer
+class Stage1_2Layer : public cocos2d::Layer
 {
 public:
-    static cocos2d::Scene* createScene();
+	static cocos2d::Scene* createScene();
 
-    virtual bool init();
-   
-    // implement the "static create()" method manually
-    CREATE_FUNC(Stage1_Layer);
+	virtual bool init();
 
-	
+	// implement the "static create()" method manually
+	CREATE_FUNC(Stage1_2Layer);
+
+
 	//b2World *_world;
 	vector<int> touchNum;
 	//vector<int> joyNum;
@@ -42,20 +38,19 @@ public:
 	//Player *player;
 	//Sprite *pSprite;
 	//b2Body *playerBody;
-	Stage1_1 *bgLayer;
-	Stage1_2 *bgLayer2;
+	Stage1_2 *bgLayer;
 	Player *player;
 	Layer *joyLayer;
 	int count = 0;
-	
+
 
 	Vec2 kCenter1, kCenter2;
 	Sprite* thumb1, *thumb2;
-	bool isPressed1,isPressed2;
+	bool isPressed1, isPressed2;
 
 	Vec2 velocity1, velocity2;
 	int tCount = 0;
-	
+
 
 	void updateVelocity1(Vec2 point);
 	void updateVelocity2(Vec2 point);
@@ -63,7 +58,6 @@ public:
 	void resetJoystick2();
 	bool handleLastTouch1();
 	bool handleLastTouch2();
-	void tick(float);
 	
 
 
@@ -77,6 +71,3 @@ public:
 
 };
 
-
-
-#endif // __HELLOWORLD_SCENE_H__

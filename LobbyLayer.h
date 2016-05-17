@@ -2,7 +2,6 @@
 #include "cocos2d.h"
 #include "Box2D/Box2D.h"
 #include "GLES-Render.h"
-#include "Joystick.h"
 #include "Player.h"
 #include "Lobby.h"
 
@@ -33,8 +32,6 @@ public:
 
 
 	//b2World *_world;
-	Joystick *joystick1;
-	Joystick *joystick2;
 	vector<int> touchNum;
 	//vector<int> joyNum;
 	int joyNum[5] = { 10 };

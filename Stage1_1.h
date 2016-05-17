@@ -5,11 +5,11 @@
 #include "cocos2d.h"
 #include "Box2D/Box2D.h"
 #include "GLES-Render.h"
-#include "Joystick.h"
 #include "Player.h"
 #include "Monster.h"
 #include "SwordMissile.h"
 #include "ContactListener.h"
+#include "Stage1_2Layer.h"
 
 
 #define PTM_RATIO 32
@@ -40,7 +40,7 @@ public:
 
 	~Stage1_1();
 	void onEnter();
-	void onExit();
+	//void onExit();
 	void tick(float);
 	void draw(Renderer* renderer, const Mat4 &transform, uint32_t flags);
 
@@ -67,6 +67,7 @@ public:
 	ContactListener* myContactListener;
 	int clickCount = 0;
 	int count = 0;
+	int tCount = 0;
 	bool isAttacking;
 
 

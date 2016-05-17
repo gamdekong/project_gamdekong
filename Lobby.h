@@ -2,7 +2,6 @@
 #include "cocos2d.h"
 #include "Box2D/Box2D.h"
 #include "GLES-Render.h"
-#include "Joystick.h"
 #include "Player.h"
 #include "Monster.h"
 #include "SwordMissile.h"

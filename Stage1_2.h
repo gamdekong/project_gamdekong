@@ -1,8 +1,8 @@
 #pragma once
+
 #include "cocos2d.h"
 #include "Box2D/Box2D.h"
 #include "GLES-Render.h"
-#include "Joystick.h"
 #include "Player.h"
 #include "Monster.h"
 #include "SwordMissile.h"
@@ -25,7 +25,7 @@
 using namespace cocos2d;
 using namespace std;
 
-class Stage1_1 : public cocos2d::Layer
+class Stage1_2 : public cocos2d::Layer
 {
 public:
 	static cocos2d::Scene* createScene();
@@ -33,11 +33,11 @@ public:
 	virtual bool init();
 
 	// implement the "static create()" method manually
-	CREATE_FUNC(Stage1_1);
+	CREATE_FUNC(Stage1_2);
 
-	~Stage1_1();
+	~Stage1_2();
 	void onEnter();
-	void onExit();
+	//void onExit();
 	void tick(float);
 	void draw(Renderer* renderer, const Mat4 &transform, uint32_t flags);
 

@@ -72,28 +72,31 @@ bool Stage1_Layer::init()
 	thumb2->setPosition(kCenter2);
 	this->addChild(thumb2, 2);
 
-	
 	player = new Player();
+	
+
+
 	bgLayer = new Stage1_1();
 	bgLayer->joystickVelocity1 = &velocity1;
 	bgLayer->joystickVelocity2 = &velocity2;
 	bgLayer->joystickIspressed1 = &isPressed1;
 	bgLayer->joystickIspressed2 = &isPressed2;
 	bgLayer->player = player;
-
+	bgLayer->addChild(player);
 	bgLayer->init();
 
-
-
-	bgLayer->addChild(player,3);
-	//this->addChild(player, 3);
-
-	
-	
+	bgLayer2 = new Stage1_2();
+	bgLayer2->joystickVelocity1 = &velocity1;
+	bgLayer2->joystickVelocity2 = &velocity2;
+	bgLayer2->joystickIspressed1 = &isPressed1;
+	bgLayer2->joystickIspressed2 = &isPressed2;
+	//bgLayer->player = player;
+	//bgLayer->init();
 
 
 	this->addChild(bgLayer, 0);
    
+	this->schedule(schedule_selector(Stage1_Layer::tick, this));
     return true;
 }
 
@@ -194,16 +197,35 @@ bool Stage1_Layer::handleLastTouch2()
 	return (wasPressed ? true : false);
 }
 
+void Stage1_Layer::tick(float)
+{
+
+	if (player->getPosition().x > 1000 && player->getPosition().x < 1100 && player->getPosition().y > 500 && player->nowStage == 1)
+	{
+		player->nowStage = 2;
+		bgLayer->removeChild(player,true);
+		this->removeChild(bgLayer,true);
+		bgLayer2->player = player;
+		player->setPosition(Vec2(1050, 500));
+		bgLayer2->addChild(player);
+		bgLayer2->init();
+
+		this->addChild(bgLayer2);
+
+	}
+
+}
+
 
 void Stage1_Layer::onEnter()
 {
 	Layer::onEnter();
 
 	auto listener = EventListenerTouchAllAtOnce::create();
-	listener->onTouchesBegan = CC_CALLBACK_2(Joystick::onTouchesBegan, this);
-	listener->onTouchesMoved = CC_CALLBACK_2(Joystick::onTouchesMoved, this);
-	listener->onTouchesEnded = CC_CALLBACK_2(Joystick::onTouchesEnded, this);
-	listener->onTouchesCancelled = CC_CALLBACK_2(Joystick::onTouchesCancelled, this);
+	listener->onTouchesBegan = CC_CALLBACK_2(Stage1_Layer::onTouchesBegan, this);
+	listener->onTouchesMoved = CC_CALLBACK_2(Stage1_Layer::onTouchesMoved, this);
+	listener->onTouchesEnded = CC_CALLBACK_2(Stage1_Layer::onTouchesEnded, this);
+	listener->onTouchesCancelled = CC_CALLBACK_2(Stage1_Layer::onTouchesCancelled, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 }
 

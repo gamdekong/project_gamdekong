@@ -1,13 +1,13 @@
-#include "LobbyLayer.h"
+#include "Stage1_2Layer.h"
 
 USING_NS_CC;
 
 
-Scene* LobbyLayer::createScene()
+Scene* Stage1_2Layer::createScene()
 {
 
 	auto scene = Scene::create();
-	auto layer = LobbyLayer::create();
+	auto layer = Stage1_2Layer::create();
 	scene->addChild(layer);
 
 
@@ -15,7 +15,7 @@ Scene* LobbyLayer::createScene()
 }
 
 // on "init" you need to initialize your instance
-bool LobbyLayer::init()
+bool Stage1_2Layer::init()
 {
 	//////////////////////////////
 	// 1. super init first
@@ -74,7 +74,7 @@ bool LobbyLayer::init()
 
 
 
-	bgLayer = new Lobby();
+	bgLayer = new Stage1_2();
 	bgLayer->joystickVelocity1 = &velocity1;
 	bgLayer->joystickVelocity2 = &velocity2;
 	bgLayer->joystickIspressed1 = &isPressed1;
@@ -96,7 +96,7 @@ static bool isPointInCircle(Vec2 point, Vec2 center, float radius)
 	return (radius >= sqrt((dx*dx) + (dy*dy)));
 }
 
-void LobbyLayer::updateVelocity1(Vec2 point)
+void Stage1_2Layer::updateVelocity1(Vec2 point)
 {
 	// calculate Angle and length
 	float dx = point.x - kCenter1.x;
@@ -121,7 +121,7 @@ void LobbyLayer::updateVelocity1(Vec2 point)
 
 	thumb1->setPosition(point);
 }
-void LobbyLayer::updateVelocity2(Vec2 point)
+void Stage1_2Layer::updateVelocity2(Vec2 point)
 {
 	// calculate Angle and length
 	float dx = point.x - kCenter2.x;
@@ -147,18 +147,18 @@ void LobbyLayer::updateVelocity2(Vec2 point)
 	thumb2->setPosition(point);
 }
 
-void LobbyLayer::resetJoystick1()
+void Stage1_2Layer::resetJoystick1()
 {
 	this->updateVelocity1(kCenter1);
 }
-void LobbyLayer::resetJoystick2()
+void Stage1_2Layer::resetJoystick2()
 {
 	log("2");
 
 	this->updateVelocity2(kCenter2);
 }
 
-bool LobbyLayer::handleLastTouch1()
+bool Stage1_2Layer::handleLastTouch1()
 {
 	bool wasPressed = isPressed1;
 
@@ -171,7 +171,7 @@ bool LobbyLayer::handleLastTouch1()
 	}
 	return (wasPressed ? true : false);
 }
-bool LobbyLayer::handleLastTouch2()
+bool Stage1_2Layer::handleLastTouch2()
 {
 	bool wasPressed = isPressed2;
 
@@ -186,20 +186,21 @@ bool LobbyLayer::handleLastTouch2()
 }
 
 
-void LobbyLayer::onEnter()
+void Stage1_2Layer::onEnter()
 {
 	Layer::onEnter();
 
 	auto listener = EventListenerTouchAllAtOnce::create();
-	listener->onTouchesBegan = CC_CALLBACK_2(LobbyLayer::onTouchesBegan, this);
-	listener->onTouchesMoved = CC_CALLBACK_2(LobbyLayer::onTouchesMoved, this);
-	listener->onTouchesEnded = CC_CALLBACK_2(LobbyLayer::onTouchesEnded, this);
-	listener->onTouchesCancelled = CC_CALLBACK_2(LobbyLayer::onTouchesCancelled, this);
+	listener->onTouchesBegan = CC_CALLBACK_2(Stage1_2Layer::onTouchesBegan, this);
+	listener->onTouchesMoved = CC_CALLBACK_2(Stage1_2Layer::onTouchesMoved, this);
+	listener->onTouchesEnded = CC_CALLBACK_2(Stage1_2Layer::onTouchesEnded, this);
+	listener->onTouchesCancelled = CC_CALLBACK_2(Stage1_2Layer::onTouchesCancelled, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 }
 
-void LobbyLayer::onTouchesBegan(const std::vector<Touch*>& touches, Event  *event)
+void Stage1_2Layer::onTouchesBegan(const std::vector<Touch*>& touches, Event  *event)
 {
+	log("d");
 	for (auto &item : touches)
 	{
 
@@ -233,7 +234,7 @@ void LobbyLayer::onTouchesBegan(const std::vector<Touch*>& touches, Event  *even
 
 }
 
-void LobbyLayer::onTouchesMoved(const std::vector<Touch*>& touches, Event  *event)
+void Stage1_2Layer::onTouchesMoved(const std::vector<Touch*>& touches, Event  *event)
 {
 	for (auto &item : touches)
 	{
@@ -268,7 +269,7 @@ void LobbyLayer::onTouchesMoved(const std::vector<Touch*>& touches, Event  *even
 
 }
 
-void LobbyLayer::onTouchesEnded(const std::vector<Touch*>& touches, Event  *event)
+void Stage1_2Layer::onTouchesEnded(const std::vector<Touch*>& touches, Event  *event)
 {
 	for (auto &item : touches)
 	{
