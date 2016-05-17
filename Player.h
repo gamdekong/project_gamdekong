@@ -16,7 +16,7 @@ public:
 	Player();
 	void init2();
 
-
+	int nowStage = 1;
 	int maxEnergy;
 	int nowEnergy;
 	int power;

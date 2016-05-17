@@ -1,13 +1,13 @@
-﻿#include "HelloWorldScene.h"
+﻿#include "Stage1_Layer.h"
 
 USING_NS_CC;
 
 
-Scene* HelloWorld::createScene()
+Scene* Stage1_Layer::createScene()
 {
    
     auto scene = Scene::create();
-    auto layer = HelloWorld::create();
+    auto layer = Stage1_Layer::create();
 	scene->addChild(layer);
 
 
@@ -15,7 +15,7 @@ Scene* HelloWorld::createScene()
 }
 
 // on "init" you need to initialize your instance
-bool HelloWorld::init()
+bool Stage1_Layer::init()
 {
     //////////////////////////////
     // 1. super init first
@@ -72,15 +72,24 @@ bool HelloWorld::init()
 	thumb2->setPosition(kCenter2);
 	this->addChild(thumb2, 2);
 
-
-
-	bgLayer = new BackgroundLayer();
+	
+	player = new Player();
+	bgLayer = new Stage1_1();
 	bgLayer->joystickVelocity1 = &velocity1;
 	bgLayer->joystickVelocity2 = &velocity2;
 	bgLayer->joystickIspressed1 = &isPressed1;
 	bgLayer->joystickIspressed2 = &isPressed2;
-	//bgLayer->player = player;
+	bgLayer->player = player;
+
 	bgLayer->init();
+
+
+
+	bgLayer->addChild(player,3);
+	//this->addChild(player, 3);
+
+	
+	
 
 
 	this->addChild(bgLayer, 0);
@@ -96,7 +105,7 @@ static bool isPointInCircle(Vec2 point, Vec2 center, float radius)
 	return (radius >= sqrt((dx*dx) + (dy*dy)));
 }
 
-void HelloWorld::updateVelocity1(Vec2 point)
+void Stage1_Layer::updateVelocity1(Vec2 point)
 {
 	// calculate Angle and length
 	float dx = point.x - kCenter1.x;
@@ -121,7 +130,7 @@ void HelloWorld::updateVelocity1(Vec2 point)
 
 	thumb1->setPosition(point);
 }
-void HelloWorld::updateVelocity2(Vec2 point)
+void Stage1_Layer::updateVelocity2(Vec2 point)
 {
 	// calculate Angle and length
 	float dx = point.x - kCenter2.x;
@@ -147,18 +156,18 @@ void HelloWorld::updateVelocity2(Vec2 point)
 	thumb2->setPosition(point);
 }
 
-void HelloWorld::resetJoystick1()
+void Stage1_Layer::resetJoystick1()
 {
 	this->updateVelocity1(kCenter1);
 }
-void HelloWorld::resetJoystick2()
+void Stage1_Layer::resetJoystick2()
 {
 	log("2");
 
 	this->updateVelocity2(kCenter2);
 }
 
-bool HelloWorld::handleLastTouch1()
+bool Stage1_Layer::handleLastTouch1()
 {
 	bool wasPressed = isPressed1;
 
@@ -171,7 +180,7 @@ bool HelloWorld::handleLastTouch1()
 	}
 	return (wasPressed ? true : false);
 }
-bool HelloWorld::handleLastTouch2()
+bool Stage1_Layer::handleLastTouch2()
 {
 	bool wasPressed = isPressed2;
 
@@ -186,7 +195,7 @@ bool HelloWorld::handleLastTouch2()
 }
 
 
-void HelloWorld::onEnter()
+void Stage1_Layer::onEnter()
 {
 	Layer::onEnter();
 
@@ -198,7 +207,7 @@ void HelloWorld::onEnter()
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 }
 
-void HelloWorld::onTouchesBegan(const std::vector<Touch*>& touches, Event  *event)
+void Stage1_Layer::onTouchesBegan(const std::vector<Touch*>& touches, Event  *event)
 {
 	for (auto &item : touches)
 	{
@@ -233,7 +242,7 @@ void HelloWorld::onTouchesBegan(const std::vector<Touch*>& touches, Event  *even
 
 }
 
-void HelloWorld::onTouchesMoved(const std::vector<Touch*>& touches, Event  *event)
+void Stage1_Layer::onTouchesMoved(const std::vector<Touch*>& touches, Event  *event)
 {
 	for (auto &item : touches)
 	{
@@ -268,7 +277,7 @@ void HelloWorld::onTouchesMoved(const std::vector<Touch*>& touches, Event  *even
 
 }
 
-void HelloWorld::onTouchesEnded(const std::vector<Touch*>& touches, Event  *event)
+void Stage1_Layer::onTouchesEnded(const std::vector<Touch*>& touches, Event  *event)
 {
 	for (auto &item : touches)
 	{

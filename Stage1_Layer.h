@@ -1,12 +1,12 @@
-﻿#ifndef __HELLOWORLD_SCENE_H__
-#define __HELLOWORLD_SCENE_H__
+﻿#ifndef __Stage1_Layer_SCENE_H__
+#define __Stage1_Layer_SCENE_H__
 
 #include "cocos2d.h"
 #include "Box2D/Box2D.h"
 #include "GLES-Render.h"
 #include "Joystick.h"
 #include "Player.h"
-#include "BackgroundLayer.h"
+#include "Stage1_1.h"
 
 #define JOYSTICK_OFFSET_X 5.0f
 #define JOYSTICK_OFFSET_Y 5.0f
@@ -23,7 +23,7 @@ using namespace cocos2d;
 
 
 
-class HelloWorld : public cocos2d::Layer
+class Stage1_Layer : public cocos2d::Layer
 {
 public:
     static cocos2d::Scene* createScene();
@@ -31,7 +31,7 @@ public:
     virtual bool init();
    
     // implement the "static create()" method manually
-    CREATE_FUNC(HelloWorld);
+    CREATE_FUNC(Stage1_Layer);
 
 	
 	//b2World *_world;
@@ -43,7 +43,8 @@ public:
 	//Player *player;
 	//Sprite *pSprite;
 	//b2Body *playerBody;
-	BackgroundLayer *bgLayer;
+	Stage1_1 *bgLayer;
+	Player *player;
 	Layer *joyLayer;
 	int count = 0;
 	
@@ -61,6 +62,7 @@ public:
 	void resetJoystick2();
 	bool handleLastTouch1();
 	bool handleLastTouch2();
+	
 
 
 

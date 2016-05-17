@@ -1,5 +1,6 @@
 ﻿#include "AppDelegate.h"
 #include "Intro.h"
+#include "Gameover.h"
 
 USING_NS_CC;
 
@@ -52,7 +53,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
    
 
     // create a scene. it's an autorelease object
-    auto scene = Intro::createScene();
+    auto scene = Gameover::createScene();
 
     // run
     director->runWithScene(scene);

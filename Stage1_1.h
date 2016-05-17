@@ -1,7 +1,7 @@
-#ifndef __BackgroundLayer_SCENE_H__
-#define __BackgroundLayer_SCENE_H__
+#ifndef __Stage1_1_SCENE_H__
+#define __Stage1_1_SCENE_H__
 
-//#include <iostream>
+
 #include "cocos2d.h"
 #include "Box2D/Box2D.h"
 #include "GLES-Render.h"
@@ -28,7 +28,7 @@
 using namespace cocos2d;
 using namespace std;
 
-class BackgroundLayer : public cocos2d::Layer
+class Stage1_1 : public cocos2d::Layer
 {
 public:
 	static cocos2d::Scene* createScene();
@@ -36,9 +36,9 @@ public:
 	virtual bool init();
 
 	// implement the "static create()" method manually
-	CREATE_FUNC(BackgroundLayer);
+	CREATE_FUNC(Stage1_1);
 
-	~BackgroundLayer();
+	~Stage1_1();
 	void onEnter();
 	void onExit();
 	void tick(float);

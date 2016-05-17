@@ -1,12 +1,12 @@
-#include "BackgroundLayer.h"
+#include "Stage1_1.h"
 
 USING_NS_CC;
 
-Scene* BackgroundLayer::createScene()
+Scene* Stage1_1::createScene()
 {
 
 	auto scene = Scene::create();
-	auto layer = BackgroundLayer::create();
+	auto layer = Stage1_1::create();
 	scene->addChild(layer);
 
 
@@ -14,7 +14,7 @@ Scene* BackgroundLayer::createScene()
 }
 
 // on "init" you need to initialize your instance
-bool BackgroundLayer::init()
+bool Stage1_1::init()
 {
 	//////////////////////////////
 	// 1. super init first
@@ -26,8 +26,8 @@ bool BackgroundLayer::init()
 	monsterBodyVector.clear();
 
 
-	player = new Player();
-	this->addChild(player, 1);
+	//player = new Player();
+	//this->addChild(player, 1);
 
 	
 	auto monster1 = new Monster(1);
@@ -49,7 +49,7 @@ bool BackgroundLayer::init()
 	
 	if (this->createWorld(true))
 	{
-		this->schedule(schedule_selector(BackgroundLayer::tick));
+		this->schedule(schedule_selector(Stage1_1::tick));
 		myContactListener = new ContactListener(player);
 
 		_world->SetContactListener((b2ContactListener*)myContactListener);
@@ -69,7 +69,7 @@ bool BackgroundLayer::init()
 	return true;
 }
 
-bool BackgroundLayer::createWorld(bool debug)
+bool Stage1_1::createWorld(bool debug)
 {
 	//월드 생성 시작
 
@@ -134,8 +134,11 @@ bool BackgroundLayer::createWorld(bool debug)
 	groundEdge.Set(b2Vec2(0, 100 / PTM_RATIO), b2Vec2(1500 / PTM_RATIO, 100 / PTM_RATIO));
 	groundBody->CreateFixture(&boxShapeDef);
 
-	//위쪽
-	groundEdge.Set(b2Vec2(200 / PTM_RATIO, 540 / PTM_RATIO), b2Vec2(1300 / PTM_RATIO, 540 / PTM_RATIO));
+	//위쪽1
+	groundEdge.Set(b2Vec2(200 / PTM_RATIO, 540 / PTM_RATIO), b2Vec2(1000 / PTM_RATIO, 540 / PTM_RATIO));
+	groundBody->CreateFixture(&boxShapeDef);
+	//위쪽2
+	groundEdge.Set(b2Vec2(1100 / PTM_RATIO, 540 / PTM_RATIO), b2Vec2(1300 / PTM_RATIO, 540 / PTM_RATIO));
 	groundBody->CreateFixture(&boxShapeDef);
 
 	//오른쪽 기운쪽
@@ -153,7 +156,7 @@ bool BackgroundLayer::createWorld(bool debug)
 	return true;
 }
 
-void BackgroundLayer::createPlayer(Sprite * player)
+void Stage1_1::createPlayer(Sprite * player)
 {
 	
 	//--------------플레이어 바디생성
@@ -183,7 +186,7 @@ void BackgroundLayer::createPlayer(Sprite * player)
 
 }
 
-void BackgroundLayer::createMonster(Sprite * monster)
+void Stage1_1::createMonster(Sprite * monster)
 {
 	//--------------플레이어 바디생성
 	b2BodyDef monsterBodyDef;
@@ -215,16 +218,21 @@ void BackgroundLayer::createMonster(Sprite * monster)
 	mon->IdleAction();
 }
 
-void BackgroundLayer::createBackground()
+void Stage1_1::createBackground()
 {
 	auto bg = Sprite::create("stage/stage-1.png");
 	bg->setAnchorPoint(Vec2(0, 0));
 	bg->setPosition(Vec2(0, 100));
 	this->addChild(bg,0);
+
+	auto door = Sprite::create("structure/door.png");
+	door->setAnchorPoint(Vec2(0, 0));
+	door->setPosition(Vec2(985, 390));
+	this->addChild(door, 0);
 }
 
 
-BackgroundLayer::~BackgroundLayer()
+Stage1_1::~Stage1_1()
 {
 	delete _world;
 	_world = nullptr;
@@ -232,20 +240,20 @@ BackgroundLayer::~BackgroundLayer()
 }
 
 
-void BackgroundLayer::onEnter()
+void Stage1_1::onEnter()
 {
 	Layer::onEnter();
 
 }
 
-void BackgroundLayer::onExit()
+void Stage1_1::onExit()
 {
 	_eventDispatcher->removeAllEventListeners();
 	Layer::onExit();
 }
 
 
-void BackgroundLayer::draw(Renderer * renderer, const Mat4 & transform, uint32_t flags)
+void Stage1_1::draw(Renderer * renderer, const Mat4 & transform, uint32_t flags)
 {
 	//Layer::draw();
 	Layer::draw(renderer, transform, flags);
@@ -258,7 +266,7 @@ GL:ccGLEnableVertexAttribs(GL::VERTEX_ATTRIB_FLAG_POSITION);
 
 }
 
-void BackgroundLayer::tick(float dt)
+void Stage1_1::tick(float dt)
 {
 	//물리적 위치를 이용해 그래픽 위치는 갱신한다.
 
@@ -448,35 +456,35 @@ void BackgroundLayer::tick(float dt)
 
 }
 
-void BackgroundLayer::LongAttack(int num)
+void Stage1_1::LongAttack(int num)
 {
 	switch (num)
 	{
 	case RIGHTLONGATTACK:
 	
-		if (!this->isScheduled(schedule_selector(BackgroundLayer::RightLongAttack)) &&
-			!this->isScheduled(schedule_selector(BackgroundLayer::clearTime)))
+		if (!this->isScheduled(schedule_selector(Stage1_1::RightLongAttack)) &&
+			!this->isScheduled(schedule_selector(Stage1_1::clearTime)))
 		{
 			this->RightLongAttack(0);
 		}
-		else if (!this->isScheduled(schedule_selector(BackgroundLayer::RightLongAttack)))
-			this->scheduleOnce(schedule_selector(BackgroundLayer::RightLongAttack), player->attackSpeed);
+		else if (!this->isScheduled(schedule_selector(Stage1_1::RightLongAttack)))
+			this->scheduleOnce(schedule_selector(Stage1_1::RightLongAttack), player->attackSpeed);
 		break;
 
 
 	case LEFTLONGATTACK:
-		if (!this->isScheduled(schedule_selector(BackgroundLayer::LeftLongAttack)) &&
-			!this->isScheduled(schedule_selector(BackgroundLayer::clearTime)))
+		if (!this->isScheduled(schedule_selector(Stage1_1::LeftLongAttack)) &&
+			!this->isScheduled(schedule_selector(Stage1_1::clearTime)))
 		{
 			this->LeftLongAttack(0);
 		}
-		else if (!this->isScheduled(schedule_selector(BackgroundLayer::LeftLongAttack)))
-			this->scheduleOnce(schedule_selector(BackgroundLayer::LeftLongAttack), player->attackSpeed);
+		else if (!this->isScheduled(schedule_selector(Stage1_1::LeftLongAttack)))
+			this->scheduleOnce(schedule_selector(Stage1_1::LeftLongAttack), player->attackSpeed);
 		break;
 	}
 }
 
-void BackgroundLayer::RightLongAttack(float dt)
+void Stage1_1::RightLongAttack(float dt)
 {
 	log("오른쪽 검기");
 
@@ -515,10 +523,10 @@ void BackgroundLayer::RightLongAttack(float dt)
 	missileBody->SetLinearVelocity(b2Vec2(10, 0));
 	missileBodyVector.push_back(missileBody);
 	//joystick2->attack = 0;
-	this->scheduleOnce(schedule_selector(BackgroundLayer::clearTime), player->attackSpeed);
+	this->scheduleOnce(schedule_selector(Stage1_1::clearTime), player->attackSpeed);
 
 }
-void BackgroundLayer::LeftLongAttack(float dt)
+void Stage1_1::LeftLongAttack(float dt)
 {
 	log("왼쪽 검기");
 
@@ -558,11 +566,11 @@ void BackgroundLayer::LeftLongAttack(float dt)
 	missileBody->SetLinearVelocity(b2Vec2(-10, 0));
 	missileBodyVector.push_back(missileBody);
 	//joystick2->attack = 0;
-	this->scheduleOnce(schedule_selector(BackgroundLayer::clearTime), player->attackSpeed);
+	this->scheduleOnce(schedule_selector(Stage1_1::clearTime), player->attackSpeed);
 
 }
 
-void BackgroundLayer::clearTime(float)
+void Stage1_1::clearTime(float)
 {
 }
 

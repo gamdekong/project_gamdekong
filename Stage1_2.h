@@ -7,7 +7,6 @@
 #include "Monster.h"
 #include "SwordMissile.h"
 #include "ContactListener.h"
-#include "Stage1_Layer.h"
 
 
 #define PTM_RATIO 32
@@ -26,7 +25,7 @@
 using namespace cocos2d;
 using namespace std;
 
-class Lobby : public cocos2d::Layer
+class Stage1_1 : public cocos2d::Layer
 {
 public:
 	static cocos2d::Scene* createScene();
@@ -34,9 +33,11 @@ public:
 	virtual bool init();
 
 	// implement the "static create()" method manually
-	CREATE_FUNC(Lobby);
+	CREATE_FUNC(Stage1_1);
 
-	
+	~Stage1_1();
+	void onEnter();
+	void onExit();
 	void tick(float);
 	void draw(Renderer* renderer, const Mat4 &transform, uint32_t flags);
 
@@ -44,18 +45,13 @@ public:
 	bool createWorld(bool);
 	void createPlayer(Sprite *player);
 	void createMonster(Sprite *monster);
-	
 	void createBackground();
-	
 	void LongAttack(int num);
 	void RightLongAttack(float);
 	void LeftLongAttack(float);
 	void clearTime(float);
-	
 
 	b2World *_world;
-	int tCount = 0;
-	Size winSize;
 	//Joystick *joystick1;
 	//Joystick *joystick2;
 	Vec2 *joystickVelocity1, *joystickVelocity2;
