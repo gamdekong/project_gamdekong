@@ -62,7 +62,7 @@ bool Stage1_2::init()
 	this->createMonster(monster4);
 	this->createMonster(monster5);
 
-	this->createBackground();   //배경 이미지 생성
+	//this->createBackground();   //배경 이미지 생성
 	this->runAction(Follow::create(player, Rect(0, 0, 1500, 720)));  //카메라 이동
 
 
@@ -135,9 +135,15 @@ bool Stage1_2::createWorld(bool debug)
 	groundBody->CreateFixture(&boxShapeDef);
 
 	//위쪽1
-	groundEdge.Set(b2Vec2(200 / PTM_RATIO, 540 / PTM_RATIO), b2Vec2(1000 / PTM_RATIO, 540 / PTM_RATIO));
+	groundEdge.Set(b2Vec2(200 / PTM_RATIO, 540 / PTM_RATIO), b2Vec2(400 / PTM_RATIO, 540 / PTM_RATIO));
 	groundBody->CreateFixture(&boxShapeDef);
+
 	//위쪽2
+	groundEdge.Set(b2Vec2(500 / PTM_RATIO, 540 / PTM_RATIO), b2Vec2(1000 / PTM_RATIO, 540 / PTM_RATIO));
+	groundBody->CreateFixture(&boxShapeDef);
+
+
+	//위쪽3
 	groundEdge.Set(b2Vec2(1100 / PTM_RATIO, 540 / PTM_RATIO), b2Vec2(1300 / PTM_RATIO, 540 / PTM_RATIO));
 	groundBody->CreateFixture(&boxShapeDef);
 

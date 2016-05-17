@@ -236,6 +236,7 @@ Stage1_1::~Stage1_1()
 {
 	delete _world;
 	_world = nullptr;
+	
 
 }
 
@@ -268,6 +269,7 @@ GL:ccGLEnableVertexAttribs(GL::VERTEX_ATTRIB_FLAG_POSITION);
 
 void Stage1_1::tick(float dt)
 {
+	log("Dd");
 	//물리적 위치를 이용해 그래픽 위치는 갱신한다.
 
 	//velocityIterations : 바디들을 정상적으로 이동시키기 위해 필요한 충돌들을
@@ -307,18 +309,6 @@ void Stage1_1::tick(float dt)
 
 	}
 
-	//for (vector<b2Body*>::iterator it = missileBodyVector.begin(); it != missileBodyVector.end(); it++)
-	//{
-	//	if ((*it)->GetUserData() == nullptr)
-	//	{
-	//		
-	//		it
-	//		//missileBodyVector.erase(it);
-	//		_world->DestroyBody((*it));
-
-	//	}
-
-	//}
 
 	//미사일 바디 삭제와 벡터에서의 바디 삭제
 	for (int i = 0; i < missileBodyVector.size(); i++)
@@ -328,11 +318,9 @@ void Stage1_1::tick(float dt)
 		{
 			_world->DestroyBody(missileBodyVector[i]);
 			missileBodyVector.erase(missileBodyVector.begin() + i);
-			//log("%d", missileBodyVector.size());
+			
 		}
-		//if (missileBodyVector.size() > 0)
-
-			//log("%d", missileBodyVector.size());
+		
 
 	}
 
@@ -391,21 +379,6 @@ void Stage1_1::tick(float dt)
 	}
 
 
-	// 캐릭터 공격 관련 부분
-	/*if (!joystickIspressed2 && joystick2->attack != 0)
-	{
-		if (joystick2->attack == SHORT_ATTACK)
-		{
-			player->stopAllActions();
-			player->AttackAction();
-			joystick2->attack = 0;
-
-		}
-		
-	
-	}*/
-
-
 	if (joystickVelocity2->x > 0.9  )
 	{
 		LongAttack(RIGHTLONGATTACK);
@@ -454,13 +427,6 @@ void Stage1_1::tick(float dt)
 
 	}
 
-	//if (player->getPosition().x > 1000 && player->getPosition().x < 1100 && player->getPosition().y > 500 && tCount == 0)
-	//{
-	//	tCount++;
-	//	auto pScene = Stage1_2Layer::createScene();
-
-	//	Director::getInstance()->replaceScene(TransitionFade::create(0.1, pScene));
-	//}
 
 }
 

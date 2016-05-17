@@ -44,7 +44,7 @@ public:
 	void tick(float);
 	void draw(Renderer* renderer, const Mat4 &transform, uint32_t flags);
 
-	//bool onTouchBegan(Touch *touch, Event *event);
+	
 	bool createWorld(bool);
 	void createPlayer(Sprite *player);
 	void createMonster(Sprite *monster);
@@ -55,19 +55,16 @@ public:
 	void clearTime(float);
 
 	b2World *_world;
-	//Joystick *joystick1;
-	//Joystick *joystick2;
+	
 	Vec2 *joystickVelocity1, *joystickVelocity2;
 	bool *joystickIspressed1, *joystickIspressed2;
 	Player *player;
-	//Sprite *pSprite;
 	b2Body *playerBody;
 	vector<b2Body*> missileBodyVector;
 	vector<b2Body*> monsterBodyVector;
 	ContactListener* myContactListener;
 	int clickCount = 0;
 	int count = 0;
-	int tCount = 0;
 	bool isAttacking;
 
 

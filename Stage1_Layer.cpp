@@ -200,17 +200,37 @@ bool Stage1_Layer::handleLastTouch2()
 void Stage1_Layer::tick(float)
 {
 
-	if (player->getPosition().x > 1000 && player->getPosition().x < 1100 && player->getPosition().y > 500 && player->nowStage == 1)
+	if (player->getPosition().x > 1000 && player->getPosition().x < 1100 && player->getPosition().y > 480 && player->nowStage == 1)
 	{
 		player->nowStage = 2;
-		bgLayer->removeChild(player,true);
+		bgLayer->removeAllChildren();
 		this->removeChild(bgLayer,true);
+
+
 		bgLayer2->player = player;
-		player->setPosition(Vec2(1050, 500));
+		player->setPosition(Vec2(1050, 420));
 		bgLayer2->addChild(player);
 		bgLayer2->init();
 
 		this->addChild(bgLayer2);
+
+	}
+	else if (player->getPosition().x > 400 && player->getPosition().x < 500 && player->getPosition().y > 480 && player->nowStage == 2)
+	{
+		player->nowStage = 1;
+		bgLayer2->removeChild(player, true);
+		this->removeChild(bgLayer2, true);
+
+
+		bgLayer->player = player;
+		player->setPosition(Vec2(450, 420));
+		bgLayer->addChild(player);
+		//bgLayer->addChild(player);
+		//bgLayer->createPlayer(player);
+		//this->schedule(schedule_selector(Stage1_1::tick));
+		bgLayer->init();
+
+		this->addChild(bgLayer);
 
 	}
 
