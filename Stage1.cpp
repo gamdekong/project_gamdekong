@@ -1,12 +1,12 @@
-#include "Stage1_1.h"
+#include "Stage1.h"
 
 USING_NS_CC;
 
-Scene* Stage1_1::createScene()
+Scene* Stage1::createScene()
 {
 
 	auto scene = Scene::create();
-	auto layer = Stage1_1::create();
+	auto layer = Stage1::create();
 	scene->addChild(layer);
 
 
@@ -14,7 +14,7 @@ Scene* Stage1_1::createScene()
 }
 
 // on "init" you need to initialize your instance
-bool Stage1_1::init()
+bool Stage1::init()
 {
 	//////////////////////////////
 	// 1. super init first
@@ -29,47 +29,89 @@ bool Stage1_1::init()
 	//player = new Player();
 	//this->addChild(player, 1);
 
-	
-	auto monster1 = new Monster(1);
-	monster1->setPosition(Vec2(500, 200));
-	this->addChild(monster1, 1);
-	auto monster2 = new Monster(2);
-	monster2->setPosition(Vec2(800, 300));
-	this->addChild(monster2, 1);
-	auto monster3 = new Monster(3);
-	monster3->setPosition(Vec2(1000, 300));
-	this->addChild(monster3, 1);
-	auto monster4 = new Monster(4);
-	monster4->setPosition(Vec2(500, 400));
-	this->addChild(monster4, 1);
-	auto monster5 = new Monster(5);
-	monster5->setPosition(Vec2(1400, 300));
-	this->addChild(monster5, 1);
-	
-	
-	if (this->createWorld(true))
+	if (stageNum == 1)
 	{
-		this->schedule(schedule_selector(Stage1_1::tick));
-		myContactListener = new ContactListener(player);
 
-		_world->SetContactListener((b2ContactListener*)myContactListener);
+		auto monster1 = new Monster(1);
+		monster1->setPosition(Vec2(500, 200));
+		this->addChild(monster1, 1);
+		auto monster2 = new Monster(2);
+		monster2->setPosition(Vec2(800, 300));
+		this->addChild(monster2, 1);
+		auto monster3 = new Monster(3);
+		monster3->setPosition(Vec2(1000, 300));
+		this->addChild(monster3, 1);
+		auto monster5 = new Monster(5);
+		monster5->setPosition(Vec2(1400, 300));
+		this->addChild(monster5, 1);
+
+
+		if (this->createWorld(true))
+		{
+			this->schedule(schedule_selector(Stage1::tick));
+			myContactListener = new ContactListener(player);
+
+			_world->SetContactListener((b2ContactListener*)myContactListener);
+		}
+
+		  //바디 생성
+		this->createMonster(monster1);
+		this->createMonster(monster2);
+		this->createMonster(monster3);
+		this->createMonster(monster5);
+		this->createPlayer(player);
+
+		this->createBackground();   //배경 이미지 생성
+		this->runAction(Follow::create(player, Rect(0, 0, 1500, 720)));  //카메라 이동
+
+		initComplete = true;
+
 	}
+	else if (stageNum == 2)
+	{
 
-	this->createPlayer(player);  //바디 생성
-	this->createMonster(monster1);
-	this->createMonster(monster2);
-	this->createMonster(monster3);
-	this->createMonster(monster4);
-	this->createMonster(monster5);
+		auto monster1 = new Monster(1);
+		monster1->setPosition(Vec2(500, 200));
+		this->addChild(monster1, 1);
+		auto monster2 = new Monster(2);
+		monster2->setPosition(Vec2(800, 300));
+		this->addChild(monster2, 1);
+		auto monster3 = new Monster(3);
+		monster3->setPosition(Vec2(1000, 300));
+		this->addChild(monster3, 1);
+		auto monster5 = new Monster(5);
+		monster5->setPosition(Vec2(1400, 300));
+		this->addChild(monster5, 1);
 
-	this->createBackground();   //배경 이미지 생성
-	this->runAction(Follow::create(player, Rect(0, 0, 1500, 720)));  //카메라 이동
 
+		if (this->createWorld(true))
+		{
+			this->schedule(schedule_selector(Stage1::tick));
+			myContactListener = new ContactListener(player);
 
+			_world->SetContactListener((b2ContactListener*)myContactListener);
+		}
+
+	  //바디 생성
+		this->createMonster(monster1);
+		this->createMonster(monster2);
+		this->createMonster(monster3);
+		this->createMonster(monster5);
+		this->createPlayer(player);
+
+		this->createBackground();   //배경 이미지 생성
+		this->runAction(Follow::create(player, Rect(0, 0, 1500, 720)));  //카메라 이동
+
+		initComplete = true;
+
+	}
+	
+	
+	
 	return true;
 }
 
-bool Stage1_1::createWorld(bool debug)
+bool Stage1::createWorld(bool debug)
 {
 	//월드 생성 시작
 
@@ -135,9 +177,15 @@ bool Stage1_1::createWorld(bool debug)
 	groundBody->CreateFixture(&boxShapeDef);
 
 	//위쪽1
-	groundEdge.Set(b2Vec2(200 / PTM_RATIO, 540 / PTM_RATIO), b2Vec2(1000 / PTM_RATIO, 540 / PTM_RATIO));
+	groundEdge.Set(b2Vec2(200 / PTM_RATIO, 540 / PTM_RATIO), b2Vec2(400 / PTM_RATIO, 540 / PTM_RATIO));
 	groundBody->CreateFixture(&boxShapeDef);
+
 	//위쪽2
+	groundEdge.Set(b2Vec2(500 / PTM_RATIO, 540 / PTM_RATIO), b2Vec2(1000 / PTM_RATIO, 540 / PTM_RATIO));
+	groundBody->CreateFixture(&boxShapeDef);
+
+
+	//위쪽3
 	groundEdge.Set(b2Vec2(1100 / PTM_RATIO, 540 / PTM_RATIO), b2Vec2(1300 / PTM_RATIO, 540 / PTM_RATIO));
 	groundBody->CreateFixture(&boxShapeDef);
 
@@ -156,7 +204,7 @@ bool Stage1_1::createWorld(bool debug)
 	return true;
 }
 
-void Stage1_1::createPlayer(Sprite * player)
+void Stage1::createPlayer(Sprite * player)
 {
 	
 	//--------------플레이어 바디생성
@@ -174,7 +222,6 @@ void Stage1_1::createPlayer(Sprite * player)
 
 	b2PolygonShape playerPolygon;
 	playerPolygon.SetAsBox((player->getContentSize().width /6) / PTM_RATIO, (player->getContentSize().height / 2) / PTM_RATIO);
-	log(" %f ", (player->getContentSize().height / 2.5));
 
 	b2FixtureDef playerFixtureDef;
 	playerFixtureDef.shape = &playerPolygon;
@@ -186,7 +233,7 @@ void Stage1_1::createPlayer(Sprite * player)
 
 }
 
-void Stage1_1::createMonster(Sprite * monster)
+void Stage1::createMonster(Sprite * monster)
 {
 	//--------------플레이어 바디생성
 	b2BodyDef monsterBodyDef;
@@ -218,21 +265,40 @@ void Stage1_1::createMonster(Sprite * monster)
 	mon->IdleAction();
 }
 
-void Stage1_1::createBackground()
+void Stage1::createBackground()
 {
 	auto bg = Sprite::create("stage/stage-1.png");
 	bg->setAnchorPoint(Vec2(0, 0));
 	bg->setPosition(Vec2(0, 100));
 	this->addChild(bg,0);
 
-	auto door = Sprite::create("structure/door.png");
-	door->setAnchorPoint(Vec2(0, 0));
-	door->setPosition(Vec2(985, 390));
-	this->addChild(door, 0);
+
+	auto door1 = Sprite::create("structure/door.png");
+	door1->setAnchorPoint(Vec2(0, 0));
+	door1->setPosition(Vec2(380, 390));
+	this->addChild(door1, 0);
+
+	auto door2 = Sprite::create("structure/door.png");
+	door2->setAnchorPoint(Vec2(0, 0));
+	door2->setPosition(Vec2(985, 390));
+	this->addChild(door2, 0);
+
+	
+
+	if (stageNum == 1)
+	{
+		auto number = LabelTTF::create("1", "Aria", 50);
+		bg->addChild(number,0);
+	}
+	else if (stageNum == 2)
+	{
+		auto number = LabelTTF::create("2", "Aria", 50);
+		bg->addChild(number,0);
+	}
 }
 
 
-Stage1_1::~Stage1_1()
+Stage1::~Stage1()
 {
 	delete _world;
 	_world = nullptr;
@@ -241,20 +307,20 @@ Stage1_1::~Stage1_1()
 }
 
 
-void Stage1_1::onEnter()
+void Stage1::onEnter()
 {
 	Layer::onEnter();
 
 }
 //
-//void Stage1_1::onExit()
+//void Stage1::onExit()
 //{
 //	_eventDispatcher->removeAllEventListeners();
 //	Layer::onExit();
 //}
 
 
-void Stage1_1::draw(Renderer * renderer, const Mat4 & transform, uint32_t flags)
+void Stage1::draw(Renderer * renderer, const Mat4 & transform, uint32_t flags)
 {
 	//Layer::draw();
 	Layer::draw(renderer, transform, flags);
@@ -267,9 +333,8 @@ GL:ccGLEnableVertexAttribs(GL::VERTEX_ATTRIB_FLAG_POSITION);
 
 }
 
-void Stage1_1::tick(float dt)
+void Stage1::tick(float dt)
 {
-	log("Dd");
 	//물리적 위치를 이용해 그래픽 위치는 갱신한다.
 
 	//velocityIterations : 바디들을 정상적으로 이동시키기 위해 필요한 충돌들을
@@ -303,7 +368,7 @@ void Stage1_1::tick(float dt)
 
 			}
 			
-
+	
 		}
 		
 
@@ -332,10 +397,10 @@ void Stage1_1::tick(float dt)
 
 		if (monsterBodyVector[i]->GetUserData() == nullptr)
 		{
-			log("1%d", monsterBodyVector.size());
+			
 
 			_world->DestroyBody(monsterBodyVector[i]);
-			log("2%d", monsterBodyVector.size());
+			
 
 			monsterBodyVector.erase(monsterBodyVector.begin() + i);
 		}
@@ -430,35 +495,35 @@ void Stage1_1::tick(float dt)
 
 }
 
-void Stage1_1::LongAttack(int num)
+void Stage1::LongAttack(int num)
 {
 	switch (num)
 	{
 	case RIGHTLONGATTACK:
 	
-		if (!this->isScheduled(schedule_selector(Stage1_1::RightLongAttack)) &&
-			!this->isScheduled(schedule_selector(Stage1_1::clearTime)))
+		if (!this->isScheduled(schedule_selector(Stage1::RightLongAttack)) &&
+			!this->isScheduled(schedule_selector(Stage1::clearTime)))
 		{
 			this->RightLongAttack(0);
 		}
-		else if (!this->isScheduled(schedule_selector(Stage1_1::RightLongAttack)))
-			this->scheduleOnce(schedule_selector(Stage1_1::RightLongAttack), player->attackSpeed);
+		else if (!this->isScheduled(schedule_selector(Stage1::RightLongAttack)))
+			this->scheduleOnce(schedule_selector(Stage1::RightLongAttack), player->attackSpeed);
 		break;
 
 
 	case LEFTLONGATTACK:
-		if (!this->isScheduled(schedule_selector(Stage1_1::LeftLongAttack)) &&
-			!this->isScheduled(schedule_selector(Stage1_1::clearTime)))
+		if (!this->isScheduled(schedule_selector(Stage1::LeftLongAttack)) &&
+			!this->isScheduled(schedule_selector(Stage1::clearTime)))
 		{
 			this->LeftLongAttack(0);
 		}
-		else if (!this->isScheduled(schedule_selector(Stage1_1::LeftLongAttack)))
-			this->scheduleOnce(schedule_selector(Stage1_1::LeftLongAttack), player->attackSpeed);
+		else if (!this->isScheduled(schedule_selector(Stage1::LeftLongAttack)))
+			this->scheduleOnce(schedule_selector(Stage1::LeftLongAttack), player->attackSpeed);
 		break;
 	}
 }
 
-void Stage1_1::RightLongAttack(float dt)
+void Stage1::RightLongAttack(float dt)
 {
 	log("오른쪽 검기");
 
@@ -497,12 +562,12 @@ void Stage1_1::RightLongAttack(float dt)
 	missileBody->SetLinearVelocity(b2Vec2(10, 0));
 	missileBodyVector.push_back(missileBody);
 	//joystick2->attack = 0;
-	this->scheduleOnce(schedule_selector(Stage1_1::clearTime), player->attackSpeed);
+	this->scheduleOnce(schedule_selector(Stage1::clearTime), player->attackSpeed);
 
 }
-void Stage1_1::LeftLongAttack(float dt)
+void Stage1::LeftLongAttack(float dt)
 {
-	log("왼쪽 검기");
+	
 
 	SwordMissile *missile = new SwordMissile(1);
 	missile->setPosition(Vec2(player->getPosition().x - 50.f, player->getPosition().y));
@@ -540,11 +605,11 @@ void Stage1_1::LeftLongAttack(float dt)
 	missileBody->SetLinearVelocity(b2Vec2(-10, 0));
 	missileBodyVector.push_back(missileBody);
 	//joystick2->attack = 0;
-	this->scheduleOnce(schedule_selector(Stage1_1::clearTime), player->attackSpeed);
+	this->scheduleOnce(schedule_selector(Stage1::clearTime), player->attackSpeed);
 
 }
 
-void Stage1_1::clearTime(float)
+void Stage1::clearTime(float)
 {
 }
 

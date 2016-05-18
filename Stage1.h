@@ -1,5 +1,5 @@
-#ifndef __Stage1_1_SCENE_H__
-#define __Stage1_1_SCENE_H__
+#ifndef __Stage1_SCENE_H__
+#define __Stage1_SCENE_H__
 
 
 #include "cocos2d.h"
@@ -28,7 +28,7 @@
 using namespace cocos2d;
 using namespace std;
 
-class Stage1_1 : public cocos2d::Layer
+class Stage1 : public cocos2d::Layer
 {
 public:
 	static cocos2d::Scene* createScene();
@@ -36,14 +36,17 @@ public:
 	virtual bool init();
 
 	// implement the "static create()" method manually
-	CREATE_FUNC(Stage1_1);
-
-	~Stage1_1();
+	CREATE_FUNC(Stage1);
+	
+	~Stage1();
 	void onEnter();
 	//void onExit();
 	void tick(float);
 	void draw(Renderer* renderer, const Mat4 &transform, uint32_t flags);
 
+	int stageNum;
+	Stage1 *prev;
+	Stage1 *next;
 	
 	bool createWorld(bool);
 	void createPlayer(Sprite *player);
@@ -66,6 +69,7 @@ public:
 	int clickCount = 0;
 	int count = 0;
 	bool isAttacking;
+	bool initComplete = false;
 
 
 	//for debugging

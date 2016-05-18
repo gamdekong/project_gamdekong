@@ -41,6 +41,11 @@ public:
 	void tick(float);
 	void draw(Renderer* renderer, const Mat4 &transform, uint32_t flags);
 
+
+	int stageNum;
+	Layer *prev;
+	Layer *next;
+
 	//bool onTouchBegan(Touch *touch, Event *event);
 	bool createWorld(bool);
 	void createPlayer(Sprite *player);
@@ -65,6 +70,7 @@ public:
 	int clickCount = 0;
 	int count = 0;
 	bool isAttacking;
+	bool initComplete = false;
 
 
 	//for debugging

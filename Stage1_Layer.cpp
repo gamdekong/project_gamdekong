@@ -74,27 +74,41 @@ bool Stage1_Layer::init()
 
 	player = new Player();
 	
+	//-----------------스테이지 객체 생성------------------
 
+	bgLayer1 = new Stage1();//생성자 넣기
+	bgLayer1->stageNum = 1;
+	bgLayer1->joystickVelocity1 = &velocity1;
+	bgLayer1->joystickVelocity2 = &velocity2;
+	bgLayer1->joystickIspressed1 = &isPressed1;
+	bgLayer1->joystickIspressed2 = &isPressed2;
+	bgLayer1->player = player;
+	bgLayer1->addChild(player);
+	bgLayer1->init();
 
-	bgLayer = new Stage1_1();
-	bgLayer->joystickVelocity1 = &velocity1;
-	bgLayer->joystickVelocity2 = &velocity2;
-	bgLayer->joystickIspressed1 = &isPressed1;
-	bgLayer->joystickIspressed2 = &isPressed2;
-	bgLayer->player = player;
-	bgLayer->addChild(player);
-	bgLayer->init();
-
-	bgLayer2 = new Stage1_2();
+	bgLayer2 = new Stage1();
+	bgLayer2->stageNum = 2;
 	bgLayer2->joystickVelocity1 = &velocity1;
 	bgLayer2->joystickVelocity2 = &velocity2;
 	bgLayer2->joystickIspressed1 = &isPressed1;
 	bgLayer2->joystickIspressed2 = &isPressed2;
-	//bgLayer->player = player;
-	//bgLayer->init();
+	//-------------------------------백터에 스테이지 넣기------------------
+
+	player->nowStage = bgLayer1;
+
+	stage.push_back(bgLayer1);
+	stage.push_back(bgLayer2);
+
+	bgLayer1->prev = bgLayer2;
+	bgLayer1->next = bgLayer2;
+
+	bgLayer2->prev = bgLayer1;
+	bgLayer2->next = bgLayer1;
 
 
-	this->addChild(bgLayer, 0);
+	//---------------------------------------------------------------------
+
+	this->addChild(bgLayer1, 0);
    
 	this->schedule(schedule_selector(Stage1_Layer::tick, this));
     return true;
@@ -200,37 +214,83 @@ bool Stage1_Layer::handleLastTouch2()
 void Stage1_Layer::tick(float)
 {
 
-	if (player->getPosition().x > 1000 && player->getPosition().x < 1100 && player->getPosition().y > 480 && player->nowStage == 1)
+	if (player->getPosition().x > 1000 && player->getPosition().x < 1100 && player->getPosition().y > 480 ) // 오른쪽문
 	{
-		player->nowStage = 2;
-		bgLayer->removeAllChildren();
-		this->removeChild(bgLayer,true);
+		auto nowPlayerStage = (Stage1*)(player->nowStage);
+		auto nextPlayerStage = ((Stage1*)(player->nowStage))->next;
+		if (nowPlayerStage->next->initComplete == false)
+		{
+			
+			//-----------플레이어의 현재 스테이지를 바꾸고 현재스테이지는 제거한다.
+			player->nowStage = nextPlayerStage;
+			nowPlayerStage->removeChild(player, false);
+			nowPlayerStage->_world->DestroyBody(nowPlayerStage->playerBody);
+			this->removeChild(nowPlayerStage, false);
+			nextPlayerStage->player = player;
 
+			//-----------플레이어의 포지션을 정하고 다음 스테이지를 불러온다.
+			player->setPosition(Vec2(450, 450));
+			this->addChild(nextPlayerStage);
+			nextPlayerStage->init();
+			nextPlayerStage->addChild(player);
+		}
+		else
+		{
+			//------------현재 스테이지 제거
+			player->nowStage = nextPlayerStage;
+			nowPlayerStage->removeChild(player,false);
+			nowPlayerStage->_world->DestroyBody(nowPlayerStage->playerBody);
+			this->removeChild(nowPlayerStage, false);
 
-		bgLayer2->player = player;
-		player->setPosition(Vec2(1050, 420));
-		bgLayer2->addChild(player);
-		bgLayer2->init();
+			//------------다음 스테이지 불러옴
+			player->setPosition(Vec2(450, 450));
+			nextPlayerStage->addChild(player);
+			nextPlayerStage->createPlayer(player);
+			this->addChild(nextPlayerStage);
+			
 
-		this->addChild(bgLayer2);
+		}
+		
 
 	}
-	else if (player->getPosition().x > 400 && player->getPosition().x < 500 && player->getPosition().y > 480 && player->nowStage == 2)
+	else if (player->getPosition().x > 400 && player->getPosition().x < 500 && player->getPosition().y > 480 ) // 왼쪽문
 	{
-		player->nowStage = 1;
-		bgLayer2->removeChild(player, true);
-		this->removeChild(bgLayer2, true);
+		auto nowPlayerStage = (Stage1*)(player->nowStage);
+		auto prevPlayerStage = ((Stage1*)(player->nowStage))->prev;
+		if (nowPlayerStage->next->initComplete == false)
+		{
+
+			//-----------플레이어의 현재 스테이지를 바꾸고 현재스테이지는 제거한다.
+			player->nowStage = prevPlayerStage;
+			nowPlayerStage->removeChild(player, false);
+			nowPlayerStage->_world->DestroyBody(nowPlayerStage->playerBody);
+			this->removeChild(nowPlayerStage, false);
+			prevPlayerStage->player = player;
+
+			//-----------플레이어의 포지션을 정하고 다음 스테이지를 불러온다.
+			player->setPosition(Vec2(1050, 450));
+			this->addChild(prevPlayerStage);
+			prevPlayerStage->init();
+			prevPlayerStage->addChild(player);
+		}
+		else
+		{
+			//------------현재 스테이지 제거
+			player->nowStage = prevPlayerStage;
+			nowPlayerStage->removeChild(player, false);
+			nowPlayerStage->_world->DestroyBody(nowPlayerStage->playerBody);
+			this->removeChild(nowPlayerStage, false);
+
+			//------------다음 스테이지 불러옴
+			player->setPosition(Vec2(1050, 450));
+			prevPlayerStage->addChild(player);
+			prevPlayerStage->createPlayer(player);
+			this->addChild(prevPlayerStage);
 
 
-		bgLayer->player = player;
-		player->setPosition(Vec2(450, 420));
-		bgLayer->addChild(player);
-		//bgLayer->addChild(player);
-		//bgLayer->createPlayer(player);
-		//this->schedule(schedule_selector(Stage1_1::tick));
-		bgLayer->init();
-
-		this->addChild(bgLayer);
+		}
+		
+		
 
 	}
 

@@ -5,8 +5,7 @@
 #include "Box2D/Box2D.h"
 #include "GLES-Render.h"
 #include "Player.h"
-#include "Stage1_1.h"
-#include "Stage1_2.h"
+#include "Stage1.h"
 
 
 #define JOYSTICK_OFFSET_X 5.0f
@@ -37,13 +36,13 @@ public:
 	
 	//b2World *_world;
 	vector<int> touchNum;
+	vector<Layer*> stage;
 	//vector<int> joyNum;
 	int joyNum[5] = { 10 };
 	//Player *player;
 	//Sprite *pSprite;
 	//b2Body *playerBody;
-	Stage1_1 *bgLayer;
-	Stage1_2 *bgLayer2;
+	Stage1 *bgLayer1, *bgLayer2;
 	Player *player;
 	Layer *joyLayer;
 	int count = 0;

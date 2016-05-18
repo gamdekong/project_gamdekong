@@ -16,7 +16,7 @@ public:
 	Player();
 	void init2();
 
-	int nowStage = 1;
+	Layer *nowStage;
 	int maxEnergy;
 	int nowEnergy;
 	int power;

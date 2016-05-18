@@ -65,7 +65,7 @@ bool Stage1_2::init()
 	//this->createBackground();   //배경 이미지 생성
 	this->runAction(Follow::create(player, Rect(0, 0, 1500, 720)));  //카메라 이동
 
-
+	initComplete = true;
 	return true;
 }
 
