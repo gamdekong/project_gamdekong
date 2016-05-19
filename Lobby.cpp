@@ -22,8 +22,9 @@ bool Lobby::init()
 	{
 		return false;
 	}
-	missileBodyVector.clear();
-	monsterBodyVector.clear();
+	
+	//missileBodyVector.clear();
+	//monsterBodyVector.clear();
 	winSize = Director::getInstance()->getWinSize();
 
 	player = new Player();
@@ -39,11 +40,13 @@ bool Lobby::init()
 	fire->setPosition(Vec2(400, 370));
 	this->addChild(fire, 1);
 
+	
+
 
 
 	// 월드 생성
 
-	if (this->createWorld(true))
+	if (this->createWorld(false))
 	{
 		this->schedule(schedule_selector(Lobby::tick));
 		myContactListener = new ContactListener(player);
@@ -335,10 +338,7 @@ void Lobby::createBackground()
 	door->setPosition(Vec2(965, 400));
 	this->addChild(door,0);
 
-	auto fireborn = Sprite::create("lobby/fireborn.png");
-	fireborn->setPosition(Vec2(400, 330));
-	this->addChild(fireborn, 0);
-
+	
 	
 }
 
@@ -532,7 +532,7 @@ void Lobby::LeftLongAttack(float dt)
 
 }
 
-void Lobby::clearTime(float)
+void Lobby::clearTime(float dt)
 {
 }
 

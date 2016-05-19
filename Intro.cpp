@@ -1,7 +1,5 @@
 #include "Intro.h"
 
-USING_NS_CC;
-
 
 Scene* Intro::createScene()
 {
@@ -28,7 +26,7 @@ bool Intro::init()
 
 	auto winsize = Director::getInstance()->getWinSize();
 
-	auto bg = Sprite::create("intro/background-star.png");
+	auto bg = Sprite::create("intro/background-star1.png");
 	auto gameName = Sprite::create("intro/title.png");
 	bg->setPosition(Vec2(0 , 0));
 	bg->setAnchorPoint(Vec2(0, 0));
@@ -39,28 +37,21 @@ bool Intro::init()
 	bg2->setPosition(Vec2(0, 0));
 	
 	
-	auto orora = Sprite::create("intro/orora2.png");
-	orora->setPosition(Vec2(winsize.width/2 , winsize.height / 2));
-	orora->setOpacity(0);
-
-	auto orora2 = Sprite::create("intro/orora.png");
-	orora2->setPosition(Vec2(winsize.width / 2, winsize.height / 2));
-	orora2->setOpacity(0);
+	
 
 	auto click = Sprite::create("intro/click.png");
 	click->setPosition(Vec2(winsize.width / 2, 100));
 	
-	this->addChild(orora, 1);
-	this->addChild(orora2, 1);
+	
 	this->addChild(click, 10);
 	this->addChild(bg,0);
-	this->addChild(bg2, 4);
+	//this->addChild(bg2, 4);
 	this->addChild(gameName, 10);
 
 
 	
 
-	this->schedule(schedule_selector(Intro::tick, this));
+	this->schedule(schedule_selector(Intro::tick));
 	
 	/*auto fi = FadeIn::create(5);
 	auto fo = FadeOut::create(5);
@@ -174,16 +165,16 @@ void Intro::doStar()
 	star->runAction(seq);
 }
 
-void Intro::tick(float)
+void Intro::tick(float dt)
 {
 	
 
 
 	int time = rand() % 100 + 1;
-	if (time < 3)
-	{
-		this->doParticles();
-	}
+	//if (time < 3)
+	//{
+	//	this->doParticles();
+	//}
 	if (time > 80)
 	{
 		this->doStar();

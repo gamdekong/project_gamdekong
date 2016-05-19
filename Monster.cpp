@@ -99,7 +99,7 @@ void Monster::init2()
 		this->initWithTexture(monster, Rect(0, 0, 75, 200));
 		break;
 	case FIRE:
-		monster = Director::getInstance()->getTextureCache()->addImage("monster/npc/fire.png");
+		monster = Director::getInstance()->getTextureCache()->addImage("monster/npc/Bonfire_V1.png");
 		this->initWithTexture(monster, Rect(0, 0, 71, 100));
 		break;
 
@@ -186,10 +186,10 @@ void Monster::IdleAction()
 		animation->addSpriteFrameWithTexture(monster, Rect(225, 0, 75, 200));
 		break;
 	case FIRE:
-		animation->addSpriteFrameWithTexture(monster, Rect(0, 0, 71, 100));
-		animation->addSpriteFrameWithTexture(monster, Rect(71, 0, 71, 100));
-		animation->addSpriteFrameWithTexture(monster, Rect(142, 0, 71, 100));
-		animation->addSpriteFrameWithTexture(monster, Rect(213, 0, 71, 100));
+		animation->addSpriteFrameWithTexture(monster, Rect(0, 0, 60, 101));
+		animation->addSpriteFrameWithTexture(monster, Rect(60, 0, 60, 101));
+		animation->addSpriteFrameWithTexture(monster, Rect(120, 0, 60, 101));
+		animation->addSpriteFrameWithTexture(monster, Rect(180, 0, 60, 101));
 		break;
 		
 

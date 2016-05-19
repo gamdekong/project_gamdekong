@@ -47,9 +47,9 @@ public:
 	void createBackground();
 	
 	void LongAttack(int num);
-	void RightLongAttack(float);
-	void LeftLongAttack(float);
-	void clearTime(float);
+	void RightLongAttack(float dt);
+	void LeftLongAttack(float dt);
+	void clearTime(float dt);
 	
 
 	b2World *_world;

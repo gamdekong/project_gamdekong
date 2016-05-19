@@ -9,7 +9,7 @@
 #include "Monster.h"
 #include "SwordMissile.h"
 #include "ContactListener.h"
-#include "Stage1_2Layer.h"
+
 
 
 #define PTM_RATIO 32
@@ -24,6 +24,8 @@
 #define CATEGORY_GROUND 0x0003
 #define CATEGORY_MISSILE 0x0004
 
+
+#define BOSS_MAP_NUM 9
 
 using namespace cocos2d;
 using namespace std;
@@ -41,21 +43,21 @@ public:
 	~Stage1();
 	void onEnter();
 	//void onExit();
-	void tick(float);
+	void tick(float dt);
 	void draw(Renderer* renderer, const Mat4 &transform, uint32_t flags);
 
 	int stageNum;
-	Stage1 *prev;
-	Stage1 *next;
+	Stage1 *prev = nullptr;
+	Stage1 *next = nullptr;
 	
 	bool createWorld(bool);
 	void createPlayer(Sprite *player);
 	void createMonster(Sprite *monster);
 	void createBackground();
 	void LongAttack(int num);
-	void RightLongAttack(float);
-	void LeftLongAttack(float);
-	void clearTime(float);
+	void RightLongAttack(float dt);
+	void LeftLongAttack(float dt);
+	void clearTime(float dt);
 
 	b2World *_world;
 	
@@ -63,6 +65,7 @@ public:
 	bool *joystickIspressed1, *joystickIspressed2;
 	Player *player;
 	b2Body *playerBody;
+	b2Body *leftLockBody, *rightLockBody;
 	vector<b2Body*> missileBodyVector;
 	vector<b2Body*> monsterBodyVector;
 	ContactListener* myContactListener;
@@ -70,6 +73,7 @@ public:
 	int count = 0;
 	bool isAttacking;
 	bool initComplete = false;
+	bool doorOpen = false;
 
 
 	//for debugging

@@ -24,12 +24,12 @@ bool Stage1::init()
 	}
 	missileBodyVector.clear();
 	monsterBodyVector.clear();
-
+	auto winsize = Director::getInstance()->getWinSize();
 
 	//player = new Player();
 	//this->addChild(player, 1);
 
-	if (stageNum == 1)
+	if (stageNum == 0)
 	{
 
 		auto monster1 = new Monster(1);
@@ -63,24 +63,48 @@ bool Stage1::init()
 
 		this->createBackground();   //배경 이미지 생성
 		this->runAction(Follow::create(player, Rect(0, 0, 1500, 720)));  //카메라 이동
+		
+		auto totem = Sprite::create("structure/Totem.png");
+		totem->setPosition(Vec2(250, 430));
+		this->addChild(totem);
+
+		int x = rand() % 1000 + 200;
+		int y = rand() % 100 + 150;
+		auto mud1 = Sprite::create("structure/Rocks.png");
+		mud1->setPosition(Vec2(x, y));
+		mud1->setScale(0.5);
+		this->addChild(mud1);
+
+		x = rand() % 1000 + 200;
+		y = rand() % 100 + 150;
+		auto mud2 = Sprite::create("structure/Rocks.png");
+		mud2->setPosition(Vec2(x, y));
+		mud2->setScale(0.5);
+		this->addChild(mud2);
+
+		//auto brokenTree1 = Sprite::create("structure/Broken_tree_01.png");
+		//brokenTree1->setPosition(Vec2(500, 300));
+		//this->addChild(brokenTree1);
+
 
 		initComplete = true;
+		log("init %d",stageNum);
 
 	}
-	else if (stageNum == 2)
+	else if (stageNum == 1)
 	{
 
 		auto monster1 = new Monster(1);
 		monster1->setPosition(Vec2(500, 200));
 		this->addChild(monster1, 1);
-		auto monster2 = new Monster(2);
-		monster2->setPosition(Vec2(800, 300));
+		auto monster2 = new Monster(4);
+		monster2->setPosition(Vec2(800, 400));
 		this->addChild(monster2, 1);
 		auto monster3 = new Monster(3);
 		monster3->setPosition(Vec2(1000, 300));
 		this->addChild(monster3, 1);
-		auto monster5 = new Monster(5);
-		monster5->setPosition(Vec2(1400, 300));
+		auto monster5 = new Monster(6);
+		monster5->setPosition(Vec2( 700, 200));
 		this->addChild(monster5, 1);
 
 
@@ -102,10 +126,458 @@ bool Stage1::init()
 		this->createBackground();   //배경 이미지 생성
 		this->runAction(Follow::create(player, Rect(0, 0, 1500, 720)));  //카메라 이동
 
-		initComplete = true;
+		auto totem = Sprite::create("structure/Totem.png");
+		totem->setPosition(Vec2(350, 430));
+		this->addChild(totem);
 
+		int x = rand() % 1000 + 200;
+		int y = rand() % 100 + 150;
+		auto mud1 = Sprite::create("structure/Rocks.png");
+		mud1->setPosition(Vec2(x, y));
+		mud1->setScale(0.5);
+		this->addChild(mud1);
+
+		x = rand() % 1000 + 200;
+		y = rand() % 100 + 150;
+		auto mud2 = Sprite::create("structure/Rocks.png");
+		mud2->setPosition(Vec2(x, y));
+		mud2->setScale(0.5);
+		this->addChild(mud2);
+
+		initComplete = true;
+		log("init %d", stageNum);
+	}
+	else if (stageNum == 2)
+	{
+
+		auto monster1 = new Monster(4);
+		monster1->setPosition(Vec2(300, 200));
+		this->addChild(monster1, 1);
+		auto monster2 = new Monster(5);
+		monster2->setPosition(Vec2(800, 350));
+		this->addChild(monster2, 1);
+		auto monster3 = new Monster(8);
+		monster3->setPosition(Vec2(1000, 300));
+		this->addChild(monster3, 1);
+		auto monster5 = new Monster(2);
+		monster5->setPosition(Vec2(1000, 200));
+		this->addChild(monster5, 1);
+
+
+		if (this->createWorld(true))
+		{
+			this->schedule(schedule_selector(Stage1::tick));
+			myContactListener = new ContactListener(player);
+
+			_world->SetContactListener((b2ContactListener*)myContactListener);
+		}
+
+		//바디 생성
+		this->createMonster(monster1);
+		this->createMonster(monster2);
+		this->createMonster(monster3);
+		this->createMonster(monster5);
+		this->createPlayer(player);
+
+		this->createBackground();   //배경 이미지 생성
+		this->runAction(Follow::create(player, Rect(0, 0, 1500, 720)));  //카메라 이동
+
+		auto totem = Sprite::create("structure/Totem.png");
+		totem->setPosition(Vec2(550, 430));
+		this->addChild(totem);
+
+		int x = rand() % 1000 + 200;
+		int y = rand() % 100 + 150;
+		auto mud1 = Sprite::create("structure/Rocks.png");
+		mud1->setPosition(Vec2(x, y));
+		mud1->setScale(0.5);
+		this->addChild(mud1);
+
+		x = rand() % 1000 + 200;
+		y = rand() % 100 + 150;
+		auto mud2 = Sprite::create("structure/Rocks.png");
+		mud2->setPosition(Vec2(x, y));
+		mud2->setScale(0.5);
+		this->addChild(mud2);
+
+		initComplete = true;
+		log("init %d", stageNum);
+	}
+	else if (stageNum == 3)
+	{
+
+		auto monster1 = new Monster(2);
+		monster1->setPosition(Vec2(600, 300));
+		this->addChild(monster1, 1);
+		auto monster2 = new Monster(4);
+		monster2->setPosition(Vec2(700, 250));
+		this->addChild(monster2, 1);
+		auto monster3 = new Monster(6);
+		monster3->setPosition(Vec2(1000, 400));
+		this->addChild(monster3, 1);
+		auto monster5 = new Monster(8);
+		monster5->setPosition(Vec2(300, 400));
+		this->addChild(monster5, 1);
+
+
+		if (this->createWorld(true))
+		{
+			this->schedule(schedule_selector(Stage1::tick));
+			myContactListener = new ContactListener(player);
+
+			_world->SetContactListener((b2ContactListener*)myContactListener);
+		}
+
+		//바디 생성
+		this->createMonster(monster1);
+		this->createMonster(monster2);
+		this->createMonster(monster3);
+		this->createMonster(monster5);
+		this->createPlayer(player);
+
+		this->createBackground();   //배경 이미지 생성
+		this->runAction(Follow::create(player, Rect(0, 0, 1500, 720)));  //카메라 이동
+
+
+		auto totem = Sprite::create("structure/Totem.png");
+		totem->setPosition(Vec2(650, 430));
+		this->addChild(totem);
+
+		int x = rand() % 1000 + 200;
+		int y = rand() % 100 + 150;
+		auto mud1 = Sprite::create("structure/Rocks.png");
+		mud1->setPosition(Vec2(x, y));
+		mud1->setScale(0.5);
+		this->addChild(mud1);
+
+		x = rand() % 1000 + 200;
+		y = rand() % 100 + 150;
+		auto mud2 = Sprite::create("structure/Rocks.png");
+		mud2->setPosition(Vec2(x, y));
+		mud2->setScale(0.5);
+		this->addChild(mud2);
+
+		initComplete = true;
+		log("init %d", stageNum);
+	}
+	else if (stageNum == 4)
+	{
+
+		auto monster1 = new Monster(3);
+		monster1->setPosition(Vec2(600, 200));
+		this->addChild(monster1, 1);
+		auto monster2 = new Monster(7);
+		monster2->setPosition(Vec2(800, 300));
+		this->addChild(monster2, 1);
+		auto monster3 = new Monster(1);
+		monster3->setPosition(Vec2(500, 250));
+		this->addChild(monster3, 1);
+		auto monster5 = new Monster(5);
+		monster5->setPosition(Vec2(470, 390));
+		this->addChild(monster5, 1);
+
+
+		if (this->createWorld(true))
+		{
+			this->schedule(schedule_selector(Stage1::tick));
+			myContactListener = new ContactListener(player);
+
+			_world->SetContactListener((b2ContactListener*)myContactListener);
+		}
+
+		//바디 생성
+		this->createMonster(monster1);
+		this->createMonster(monster2);
+		this->createMonster(monster3);
+		this->createMonster(monster5);
+		this->createPlayer(player);
+
+		this->createBackground();   //배경 이미지 생성
+		this->runAction(Follow::create(player, Rect(0, 0, 1500, 720)));  //카메라 이동
+
+
+		auto totem = Sprite::create("structure/Totem.png");
+		totem->setPosition(Vec2(750, 430));
+		this->addChild(totem);
+
+		int x = rand() % 1000 + 200;
+		int y = rand() % 100 + 150;
+		auto mud1 = Sprite::create("structure/Rocks.png");
+		mud1->setPosition(Vec2(x, y));
+		mud1->setScale(0.5);
+		this->addChild(mud1);
+
+		x = rand() % 1000 + 200;
+		y = rand() % 100 + 150;
+		auto mud2 = Sprite::create("structure/Rocks.png");
+		mud2->setPosition(Vec2(x, y));
+		mud2->setScale(0.5);
+		this->addChild(mud2);
+
+		initComplete = true;
+		log("init %d", stageNum);
+	}
+	else if (stageNum == 5)
+	{
+
+		auto monster1 = new Monster(1);
+		monster1->setPosition(Vec2(300, 300));
+		this->addChild(monster1, 1);
+		auto monster2 = new Monster(5);
+		monster2->setPosition(Vec2(900, 265));
+		this->addChild(monster2, 1);
+		auto monster3 = new Monster(7);
+		monster3->setPosition(Vec2(700, 385));
+		this->addChild(monster3, 1);
+		auto monster5 = new Monster(8);
+		monster5->setPosition(Vec2(100, 250));
+		this->addChild(monster5, 1);
+
+
+		if (this->createWorld(true))
+		{
+			this->schedule(schedule_selector(Stage1::tick));
+			myContactListener = new ContactListener(player);
+
+			_world->SetContactListener((b2ContactListener*)myContactListener);
+		}
+
+		//바디 생성
+		this->createMonster(monster1);
+		this->createMonster(monster2);
+		this->createMonster(monster3);
+		this->createMonster(monster5);
+		this->createPlayer(player);
+
+		this->createBackground();   //배경 이미지 생성
+		this->runAction(Follow::create(player, Rect(0, 0, 1500, 720)));  //카메라 이동
+
+		auto totem = Sprite::create("structure/Totem.png");
+		totem->setPosition(Vec2(850, 430));
+		this->addChild(totem);
+
+		int x = rand() % 1000 + 200;
+		int y = rand() % 100 + 150;
+		auto mud1 = Sprite::create("structure/Rocks.png");
+		mud1->setPosition(Vec2(x, y));
+		mud1->setScale(0.5);
+		this->addChild(mud1);
+
+		x = rand() % 1000 + 200;
+		y = rand() % 100 + 150;
+		auto mud2 = Sprite::create("structure/Rocks.png");
+		mud2->setPosition(Vec2(x, y));
+		mud2->setScale(0.5);
+		this->addChild(mud2);
+
+		initComplete = true;
+		log("init %d", stageNum);
+	}
+	else if (stageNum == 6)
+	{
+
+		auto monster1 = new Monster(8);
+		monster1->setPosition(Vec2(400, 350));
+		this->addChild(monster1, 1);
+		auto monster2 = new Monster(6);
+		monster2->setPosition(Vec2(700, 270));
+		this->addChild(monster2, 1);
+		auto monster3 = new Monster(2);
+		monster3->setPosition(Vec2(1000, 370));
+		this->addChild(monster3, 1);
+		auto monster5 = new Monster(4);
+		monster5->setPosition(Vec2(1200, 200));
+		this->addChild(monster5, 1);
+
+
+		if (this->createWorld(true))
+		{
+			this->schedule(schedule_selector(Stage1::tick));
+			myContactListener = new ContactListener(player);
+
+			_world->SetContactListener((b2ContactListener*)myContactListener);
+		}
+
+		//바디 생성
+		this->createMonster(monster1);
+		this->createMonster(monster2);
+		this->createMonster(monster3);
+		this->createMonster(monster5);
+		this->createPlayer(player);
+
+		this->createBackground();   //배경 이미지 생성
+		this->runAction(Follow::create(player, Rect(0, 0, 1500, 720)));  //카메라 이동
+
+		auto totem = Sprite::create("structure/Totem.png");
+		totem->setPosition(Vec2(950, 430));
+		this->addChild(totem);
+
+		int x = rand() % 1000 + 200;
+		int y = rand() % 100 + 150;
+		auto mud1 = Sprite::create("structure/Rocks.png");
+		mud1->setPosition(Vec2(x, y));
+		mud1->setScale(0.5);
+		this->addChild(mud1);
+
+		x = rand() % 1000 + 200;
+		y = rand() % 100 + 150;
+		auto mud2 = Sprite::create("structure/Rocks.png");
+		mud2->setPosition(Vec2(x, y));
+		mud2->setScale(0.5);
+		this->addChild(mud2);
+
+		initComplete = true;
+		log("init %d", stageNum);
+	}
+	else if (stageNum == 7)
+	{
+
+		auto monster1 = new Monster(6);
+		monster1->setPosition(Vec2(700, 345));
+		this->addChild(monster1, 1);
+		auto monster2 = new Monster(5);
+		monster2->setPosition(Vec2(500, 380));
+		this->addChild(monster2, 1);
+		auto monster3 = new Monster(3);
+		monster3->setPosition(Vec2(300, 180));
+		this->addChild(monster3, 1);
+		auto monster5 = new Monster(1);
+		monster5->setPosition(Vec2(500, 180));
+		this->addChild(monster5, 1);
+
+
+		if (this->createWorld(true))
+		{
+			this->schedule(schedule_selector(Stage1::tick));
+			myContactListener = new ContactListener(player);
+
+			_world->SetContactListener((b2ContactListener*)myContactListener);
+		}
+
+		//바디 생성
+		this->createMonster(monster1);
+		this->createMonster(monster2);
+		this->createMonster(monster3);
+		this->createMonster(monster5);
+		this->createPlayer(player);
+
+		this->createBackground();   //배경 이미지 생성
+		this->runAction(Follow::create(player, Rect(0, 0, 1500, 720)));  //카메라 이동
+
+		auto totem = Sprite::create("structure/Totem.png");
+		totem->setPosition(Vec2(1150, 430));
+		this->addChild(totem);
+
+		initComplete = true;
+		log("init %d", stageNum);
+	}
+	else if (stageNum == 8)
+	{
+
+		auto monster1 = new Monster(2);
+		monster1->setPosition(Vec2(400, 355));
+		this->addChild(monster1, 1);
+		auto monster2 = new Monster(1);
+		monster2->setPosition(Vec2(900, 225));
+		this->addChild(monster2, 1);
+		auto monster3 = new Monster(5);
+		monster3->setPosition(Vec2(740, 400));
+		this->addChild(monster3, 1);
+		auto monster5 = new Monster(6);
+		monster5->setPosition(Vec2(1200, 120));
+		this->addChild(monster5, 1);
+
+
+		if (this->createWorld(true))
+		{
+			this->schedule(schedule_selector(Stage1::tick));
+			myContactListener = new ContactListener(player);
+
+			_world->SetContactListener((b2ContactListener*)myContactListener);
+		}
+
+		//바디 생성
+		this->createMonster(monster1);
+		this->createMonster(monster2);
+		this->createMonster(monster3);
+		this->createMonster(monster5);
+		this->createPlayer(player);
+
+		this->createBackground();   //배경 이미지 생성
+		this->runAction(Follow::create(player, Rect(0, 0, 1500, 720)));  //카메라 이동
+
+
+		auto totem = Sprite::create("structure/Totem.png");
+		totem->setPosition(Vec2(200, 430));
+		this->addChild(totem);
+
+		int x = rand() % 1000 + 200;
+		int y = rand() % 100 + 150;
+		auto mud1 = Sprite::create("structure/Rocks.png");
+		mud1->setPosition(Vec2(x, y));
+		mud1->setScale(0.5);
+		this->addChild(mud1);
+
+		x = rand() % 1000 + 200;
+		y = rand() % 100 + 150;
+		auto mud2 = Sprite::create("structure/Rocks.png");
+		mud2->setPosition(Vec2(x, y));
+		mud2->setScale(0.5);
+		this->addChild(mud2);
+
+		initComplete = true;
+		log("init %d", stageNum);
 	}
 	
+	else if (stageNum == 9)
+	{
+
+		auto monster1 = new Monster(7);
+		monster1->setPosition(Vec2(winsize.width / 2 , winsize.height /2));
+		this->addChild(monster1, 1);
+		
+
+
+		if (this->createWorld(true))
+		{
+			this->schedule(schedule_selector(Stage1::tick));
+			myContactListener = new ContactListener(player);
+
+			_world->SetContactListener((b2ContactListener*)myContactListener);
+		}
+
+		//바디 생성
+		this->createMonster(monster1);
+		
+		this->createPlayer(player);
+
+		this->createBackground();   //배경 이미지 생성
+		this->runAction(Follow::create(player, Rect(0, 0, 1500, 720)));  //카메라 이동
+
+		auto totem = Sprite::create("structure/Totem.png");
+		totem->setPosition(Vec2(750, 430));
+		this->addChild(totem);
+
+		int x = rand() % 1000 + 200;
+		int y = rand() % 100 + 150;
+		auto mud1 = Sprite::create("structure/Rocks.png");
+		mud1->setPosition(Vec2(x, y));
+		mud1->setScale(0.5);
+		this->addChild(mud1);
+
+		x = rand() % 1000 + 200;
+		y = rand() % 100 + 150;
+		auto mud2 = Sprite::create("structure/Rocks.png");
+		mud2->setPosition(Vec2(x, y));
+		mud2->setScale(0.5);
+		this->addChild(mud2);
+
+		initComplete = true;
+		log("init %d", stageNum);
+	}
+	
+
+
 	
 	
 	return true;
@@ -179,10 +651,24 @@ bool Stage1::createWorld(bool debug)
 	//위쪽1
 	groundEdge.Set(b2Vec2(200 / PTM_RATIO, 540 / PTM_RATIO), b2Vec2(400 / PTM_RATIO, 540 / PTM_RATIO));
 	groundBody->CreateFixture(&boxShapeDef);
+	
+	if (stageNum != BOSS_MAP_NUM && this->prev == nullptr) //왼쪽문이 nullptr시
+	{
+		groundEdge.Set(b2Vec2(400 / PTM_RATIO, 540 / PTM_RATIO), b2Vec2(500 / PTM_RATIO, 540 / PTM_RATIO));
+		groundBody->CreateFixture(&boxShapeDef);
+
+	}
 
 	//위쪽2
 	groundEdge.Set(b2Vec2(500 / PTM_RATIO, 540 / PTM_RATIO), b2Vec2(1000 / PTM_RATIO, 540 / PTM_RATIO));
 	groundBody->CreateFixture(&boxShapeDef);
+
+	if (stageNum != BOSS_MAP_NUM && this->next == nullptr) //왼쪽문이 nullptr시
+	{
+		groundEdge.Set(b2Vec2(1000 / PTM_RATIO, 540 / PTM_RATIO), b2Vec2(1100 / PTM_RATIO, 540 / PTM_RATIO));
+		groundBody->CreateFixture(&boxShapeDef);
+
+	}
 
 
 	//위쪽3
@@ -199,8 +685,48 @@ bool Stage1::createWorld(bool debug)
 
 	//월드 생성 끝-----------------------
 
-	
+	b2BodyDef leftLockDef;
+	leftLockDef.type = b2_kinematicBody;
+	leftLockDef.position.Set(450 / PTM_RATIO, 540 / PTM_RATIO);
+	leftLockDef.userData = nullptr;
 
+	leftLockBody = _world->CreateBody(&leftLockDef);
+
+	b2PolygonShape leftLockBox;
+	leftLockBox.SetAsBox(100 / PTM_RATIO, 0);
+	
+	b2FixtureDef leftLockFixture;
+	leftLockFixture.shape = &leftLockBox;
+	leftLockFixture.density = 1.0f;
+	leftLockFixture.filter.categoryBits = CATEGORY_GROUND;
+	leftLockFixture.filter.maskBits = CATEGORY_MONSTER + CATEGORY_PLAYER;
+
+	leftLockBody->CreateFixture(&leftLockFixture);
+
+	b2BodyDef rightLockDef;
+	rightLockDef.type = b2_kinematicBody;
+	rightLockDef.position.Set(1050 / PTM_RATIO, 540 / PTM_RATIO);
+	rightLockDef.userData = nullptr;
+
+	rightLockBody = _world->CreateBody(&rightLockDef);
+
+	b2PolygonShape rightLockBox;
+	rightLockBox.SetAsBox(100 / PTM_RATIO, 0);
+
+	b2FixtureDef rightLockFixture;
+	rightLockFixture.shape = &rightLockBox;
+	rightLockFixture.density = 1.0f;
+	rightLockFixture.filter.categoryBits = CATEGORY_GROUND;
+	rightLockFixture.filter.maskBits = CATEGORY_MONSTER + CATEGORY_PLAYER;
+
+	rightLockBody->CreateFixture(&rightLockFixture);
+
+
+	if (stageNum != BOSS_MAP_NUM && this->prev == nullptr)
+	{
+		
+
+	}
 	return true;
 }
 
@@ -254,11 +780,14 @@ void Stage1::createMonster(Sprite * monster)
 
 	b2FixtureDef monsterFixtureDef;
 	monsterFixtureDef.shape = &monsterPolygon;
-	monsterFixtureDef.density = 0.0f;
+	monsterFixtureDef.density = 1.0f;
+	monsterFixtureDef.restitution = 0.3;
+	
 	monsterFixtureDef.filter.groupIndex = GROUP_INDEX_MONSTER;
 	monsterFixtureDef.filter.categoryBits = CATEGORY_MONSTER;
 	monsterFixtureDef.filter.maskBits = CATEGORY_PLAYER;
 
+	monsterBody->SetFixedRotation(true);
 	monsterBody->CreateFixture(&monsterFixtureDef);
 	monsterBodyVector.push_back(monsterBody);
 	auto mon = (Monster*)monster;
@@ -267,34 +796,50 @@ void Stage1::createMonster(Sprite * monster)
 
 void Stage1::createBackground()
 {
-	auto bg = Sprite::create("stage/stage-1.png");
-	bg->setAnchorPoint(Vec2(0, 0));
-	bg->setPosition(Vec2(0, 100));
-	this->addChild(bg,0);
+	if (stageNum == BOSS_MAP_NUM)
+	{
+		auto bg = Sprite::create("stage/stage-boss.png");
+		bg->setAnchorPoint(Vec2(0, 0));
+		bg->setPosition(Vec2(0, 100));
+		this->addChild(bg, 0);
+	}
+	else
+	{
+		auto bg = Sprite::create("stage/stage-1.png");
+		bg->setAnchorPoint(Vec2(0, 0));
+		bg->setPosition(Vec2(0, 100));
+		this->addChild(bg, 0);
 
+	}
 
-	auto door1 = Sprite::create("structure/door.png");
-	door1->setAnchorPoint(Vec2(0, 0));
-	door1->setPosition(Vec2(380, 390));
-	this->addChild(door1, 0);
+	if (stageNum != BOSS_MAP_NUM && this->prev == nullptr) //왼쪽문이 nullptr시
+	{
+		
+	}
+	else
+	{
+		auto door1 = Sprite::create("structure/door.png");
+		door1->setAnchorPoint(Vec2(0, 0));
+		door1->setPosition(Vec2(380, 390));
+		this->addChild(door1, 0);
+	}
 
-	auto door2 = Sprite::create("structure/door.png");
-	door2->setAnchorPoint(Vec2(0, 0));
-	door2->setPosition(Vec2(985, 390));
-	this->addChild(door2, 0);
+	if (stageNum != BOSS_MAP_NUM && this->next == nullptr) //왼쪽문이 nullptr시
+	{
+
+	}
+	else
+	{
+		auto door2 = Sprite::create("structure/door.png");
+		door2->setAnchorPoint(Vec2(0, 0));
+		door2->setPosition(Vec2(985, 390));
+		this->addChild(door2, 0);
+
+	}
 
 	
 
-	if (stageNum == 1)
-	{
-		auto number = LabelTTF::create("1", "Aria", 50);
-		bg->addChild(number,0);
-	}
-	else if (stageNum == 2)
-	{
-		auto number = LabelTTF::create("2", "Aria", 50);
-		bg->addChild(number,0);
-	}
+	
 }
 
 
@@ -391,7 +936,7 @@ void Stage1::tick(float dt)
 
 
 
-
+	// 몬스터 바디 삭제
 	for (int i = 0; i < monsterBodyVector.size(); i++)
 	{
 
@@ -406,6 +951,19 @@ void Stage1::tick(float dt)
 		}
 
 	}
+
+
+	// 문 제거
+	if (monsterBodyVector.size() == 0 && doorOpen == false)
+	{
+		_world->DestroyBody(leftLockBody);
+		_world->DestroyBody(rightLockBody);
+		doorOpen = true;
+	}
+
+
+
+
 	for (int i = 0; i < monsterBodyVector.size(); i++)
 	{
 
@@ -553,11 +1111,12 @@ void Stage1::RightLongAttack(float dt)
 
 	b2FixtureDef missileFixtureDef;
 	missileFixtureDef.shape = &missilePolygon;
-	missileFixtureDef.density = 0.0f;
+	missileFixtureDef.density = 1.0f;
 	missileFixtureDef.restitution = 0.5;
 	missileFixtureDef.filter.groupIndex = GROUP_INDEX_MONSTER;
 	//monsterFixtureDef.filter.categoryBits = CATEGORY_MONSTER;
 	//monsterFixtureDef.filter.maskBits = CATEGORY_PLAYER;
+	//missileBody->SetFixedRotation(true);
 	missileBody->CreateFixture(&missileFixtureDef);
 	missileBody->SetLinearVelocity(b2Vec2(10, 0));
 	missileBodyVector.push_back(missileBody);
@@ -596,11 +1155,12 @@ void Stage1::LeftLongAttack(float dt)
 
 	b2FixtureDef missileFixtureDef;
 	missileFixtureDef.shape = &missilePolygon;
-	missileFixtureDef.density = 0.0f;
+	missileFixtureDef.density = 1.0f;
 	missileFixtureDef.restitution = 0.5;
 	missileFixtureDef.filter.groupIndex = GROUP_INDEX_MONSTER;
 	//monsterFixtureDef.filter.categoryBits = CATEGORY_MONSTER;
 	//monsterFixtureDef.filter.maskBits = CATEGORY_PLAYER;
+	//missileBody->SetFixedRotation(true);
 	missileBody->CreateFixture(&missileFixtureDef);
 	missileBody->SetLinearVelocity(b2Vec2(-10, 0));
 	missileBodyVector.push_back(missileBody);
@@ -609,7 +1169,7 @@ void Stage1::LeftLongAttack(float dt)
 
 }
 
-void Stage1::clearTime(float)
+void Stage1::clearTime(float dt)
 {
 }
 

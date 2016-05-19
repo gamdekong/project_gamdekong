@@ -17,7 +17,7 @@ public:
 
 	void doParticles();
 	void doStar();
-	void tick(float);
+	void tick(float dt);
 	void onEnter();
 	virtual void onTouchesBegan(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event* event);
 	virtual void onTouchesMoved(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event* event);

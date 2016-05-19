@@ -45,21 +45,31 @@ bool LobbyLayer::init()
 
 
 	// Á¶ÀÌ½ºÆ½ 1
-	kCenter1 = Vec2(150, 150);
+	kCenter1 = Vec2(150, 120);
 
 	velocity1 = Vec2::ZERO;
 
 	Sprite* bg1 = Sprite::create("joystick_background.png");
 	bg1->setPosition(kCenter1);
-	this->addChild(bg1, 1);
+	this->addChild(bg1, 2);
 
 	thumb1 = Sprite::create("joystick_thumb.png");
 	thumb1->setPosition(kCenter1);
-	this->addChild(thumb1, 2);
+	this->addChild(thumb1, 3);
+
+	auto upBar = Sprite::create("ui/bar.png");
+	upBar->setPosition(Vec2(winsize.width / 2, winsize.height));
+	upBar->setAnchorPoint(Vec2(0.5, 1));
+	this->addChild(upBar, 1);
+
+	auto downBar = Sprite::create("ui/bar.png");
+	downBar->setPosition(Vec2(winsize.width / 2, 0));
+	downBar->setAnchorPoint(Vec2(0.5, 0));
+	this->addChild(downBar, 1);
 
 
 	// Á¶ÀÌ½ºÆ½ 2
-	kCenter2 = Vec2(winsize.width - 150, 150);
+	kCenter2 = Vec2(winsize.width - 150, 120);
 
 
 	velocity2 = Vec2::ZERO;
@@ -81,7 +91,6 @@ bool LobbyLayer::init()
 	bgLayer->joystickIspressed2 = &isPressed2;
 	//bgLayer->player = player;
 	bgLayer->init();
-
 
 	this->addChild(bgLayer, 0);
 

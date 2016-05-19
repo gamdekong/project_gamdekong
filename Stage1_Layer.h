@@ -7,7 +7,7 @@
 #include "Player.h"
 #include "Stage1.h"
 
-
+#define STAGE_LENGTH 10
 #define JOYSTICK_OFFSET_X 5.0f
 #define JOYSTICK_OFFSET_Y 5.0f
 
@@ -34,19 +34,12 @@ public:
     CREATE_FUNC(Stage1_Layer);
 
 	
-	//b2World *_world;
 	vector<int> touchNum;
-	vector<Layer*> stage;
-	//vector<int> joyNum;
+	vector<Stage1*> stage;
 	int joyNum[5] = { 10 };
-	//Player *player;
-	//Sprite *pSprite;
-	//b2Body *playerBody;
-	Stage1 *bgLayer1, *bgLayer2;
 	Player *player;
-	Layer *joyLayer;
 	int count = 0;
-	
+	int check[STAGE_LENGTH] = { 0 };
 
 	Vec2 kCenter1, kCenter2;
 	Sprite* thumb1, *thumb2;
@@ -55,14 +48,16 @@ public:
 	Vec2 velocity1, velocity2;
 	int tCount = 0;
 	
-
+	void MakeMap();
+	void MakeMapRamdom(Stage1 *nowStage, Stage1 *preStage, int num, bool state);
 	void updateVelocity1(Vec2 point);
 	void updateVelocity2(Vec2 point);
 	void resetJoystick1();
 	void resetJoystick2();
 	bool handleLastTouch1();
 	bool handleLastTouch2();
-	void tick(float);
+	void tick(float dt);
+	void ItemUse(Ref *p);
 	
 
 

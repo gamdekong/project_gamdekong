@@ -53,7 +53,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
    
 
     // create a scene. it's an autorelease object
-    auto scene = Gameover::createScene();
+    auto scene = Intro::createScene();
 
     // run
     director->runWithScene(scene);
