@@ -323,7 +323,7 @@ void Lobby::tick(float dt)
 
 void Lobby::createBackground()
 {
-	auto bg2 = Sprite::create("lobby/lobbyBg.png");
+	auto bg2 = Sprite::create("lobby/lobbybg.png");
 	bg2->setPosition(Vec2(0, 400));
 	bg2->setAnchorPoint(Vec2(0, 0));
 	this->addChild(bg2,0);

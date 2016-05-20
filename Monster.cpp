@@ -99,7 +99,7 @@ void Monster::init2()
 		this->initWithTexture(monster, Rect(0, 0, 75, 200));
 		break;
 	case FIRE:
-		monster = Director::getInstance()->getTextureCache()->addImage("monster/npc/Bonfire_V1.png");
+		monster = Director::getInstance()->getTextureCache()->addImage("monster/npc/Bonfire_v1.png");
 		this->initWithTexture(monster, Rect(0, 0, 71, 100));
 		break;
 

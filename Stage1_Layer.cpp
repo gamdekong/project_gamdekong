@@ -344,7 +344,7 @@ void Stage1_Layer::updateVelocity1(Vec2 point)
 	float distance = sqrt(dx*dx + dy*dy);
 	float angle = atan2(dy, dx); // in radians
 
-	if (distance > JOYSTICK_RADIUS)
+	if (dx != 0 && dy != 0)
 	{
 		dx = cos(angle) * JOYSTICK_RADIUS;
 		dy = sin(angle) * JOYSTICK_RADIUS;

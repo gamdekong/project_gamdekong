@@ -94,7 +94,7 @@ void Intro::doParticles()
 	//ParticleSystem* particleTest = ParticleFireworks::create();
 	//ParticleSystem* particleTest = ParticleExplosion::create();  //stars.png
 
-	auto texture = Director::getInstance()->getTextureCache()->addImage("Images/fire.png");
+	auto texture = Director::getInstance()->getTextureCache()->addImage("images/fire.png");
 	if (type == 1)
 	{
 		particleTest1->setTexture(texture);
@@ -171,10 +171,10 @@ void Intro::tick(float dt)
 
 
 	int time = rand() % 100 + 1;
-	//if (time < 3)
-	//{
-	//	this->doParticles();
-	//}
+	if (time < 3)
+	{
+		this->doParticles();
+	}
 	if (time > 80)
 	{
 		this->doStar();

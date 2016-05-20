@@ -780,7 +780,7 @@ void Stage1::createMonster(Sprite * monster)
 
 	b2FixtureDef monsterFixtureDef;
 	monsterFixtureDef.shape = &monsterPolygon;
-	monsterFixtureDef.density = 1.0f;
+	monsterFixtureDef.density = 0.1f;
 	monsterFixtureDef.restitution = 0.3;
 	
 	monsterFixtureDef.filter.groupIndex = GROUP_INDEX_MONSTER;
